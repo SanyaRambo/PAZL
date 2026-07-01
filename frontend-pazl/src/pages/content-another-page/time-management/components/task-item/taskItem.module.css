@@ -1,0 +1,93 @@
+.item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px 12px;
+	border-bottom: 1px solid var(--border);
+	transition: background 0.15s;
+}
+.item:hover {
+	background: rgba(255, 255, 255, 0.02);
+}
+.item.done .title {
+	text-decoration: line-through;
+	opacity: 0.5;
+}
+
+.main {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex: 1;
+	min-width: 0;
+}
+.checkButton {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	color: var(--text-secondary)
+}
+.checkButton svg {
+	stroke: #40c057;
+}
+.emptyCircle {
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	border: 2px solid var(--border);
+}
+.info {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+.title {
+	font-weight: 500;
+	color: var(--text-primary);
+	font-size: 0.95rem;
+	word-break: break-word;
+}
+.description {
+	font-size: 0.8rem;
+	color: var(--text-secondary);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-shrink: 0;
+	margin-left: 12px;
+}
+.deadline {
+	font-size: 0.7rem;
+	color: var(--text-secondary);
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+.deadline.overdue {
+	color: #fa5252;
+}
+.editBtn,
+.deleteBtn {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--text-primary);
+	padding: 4px;
+	border-radius: 4px;
+	transition: all 0.15s;
+}
+.editBtn:hover {
+	color: var(--text-secondary);
+	background: rgba(255, 255, 255, 0.05);
+}
+.deleteBtn:hover {
+	color: #fa5252;
+	background: rgba(250, 82, 82, 0.1);
+}

@@ -1,0 +1,128 @@
+.postCard {
+	display: flex;
+	flex-direction: column;
+	background: var(--bg-secondary);
+	border-radius: 16px;
+	overflow: hidden;
+	transition: all 0.3s ease;
+	text-decoration: none;
+	color: inherit;
+	border: 1px var(--border);
+	height: 420px;
+	width: 100%;
+	max-width: 320px;
+	justify-self: center;
+}
+
+.postCard:hover {
+	transform: translateY(-6px);
+	border-color: rgba(64, 192, 87, 0.3);
+	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+
+@keyframes skeleton-shine {
+	0% {
+		background-position: -200% 0;
+	}
+	100% {
+		background-position: 200% 0;
+	}
+}
+
+
+.skeletonBase {
+	background: linear-gradient(90deg, var(--bg-body) 25%, var(--bg-secondary) 50%, var(--bg-body) 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shine 2s infinite;
+	border-radius: 8px;
+}
+
+
+.thumbnail {
+	width: 100%;
+	height: 160px;
+	background: (90deg, var(--bg-body) 25%, var(--bg-secondary) 50%, var(--bg-body) 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shine 2s infinite;
+	border-bottom: 1px solid var(--border);
+}
+
+
+.cardContent {
+	padding: 16px;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+
+.headerSection {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 14px;
+	height: 40px;
+}
+
+.logo {
+	width: 40px;
+	height: 40px;
+	border-radius: 8px;
+	background: linear-gradient(90deg, var(--bg-body) 25%, var(--bg-secondary) 50%, var(--bg-body) 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shine 2s infinite;
+	flex-shrink: 0;
+}
+
+
+.skeletonTitle {
+	flex: 1;
+	height: 39px;
+	border-radius: 6px;
+	background: linear-gradient(90deg, var(--bg-body) 25%, var(--bg-secondary) 50%, var(--bg-body) 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shine 2s infinite;
+	animation-delay: 0.1s;
+}
+
+
+.skeletonContentPreview {
+	flex: 1;
+	min-height: 80px;
+	border-radius: 8px;
+	margin-bottom: 16px;
+	background: linear-gradient(90deg, var(--bg-body) 25%, var(--bg-secondary) 50%, var(--bg-body) 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shine 2s infinite;
+	animation-delay: 0.2s;
+}
+
+
+.metaInfo {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: auto;
+	height: 20px;
+}
+
+.skeletonAuthor {
+	width: 80px;
+	height: 12px;
+	border-radius: 4px;
+	background: linear-gradient(90deg, var(--bg-body) 25%, var(--bg-secondary) 50%, var(--bg-body) 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shine 2s infinite;
+	animation-delay: 0.3s;
+}
+
+.skeletonDate {
+	width: 60px;
+	height: 12px;
+	border-radius: 4px;
+	background: linear-gradient(90deg, var(--bg-body) 25%, var(--bg-secondary) 50%, var(--bg-body) 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shine 2s infinite;
+	animation-delay: 0.4s;
+}

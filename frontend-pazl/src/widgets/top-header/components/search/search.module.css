@@ -1,0 +1,35 @@
+.form {
+	display: flex;
+	justify-content: center;
+	width: 95%;
+	height: 50px;
+}
+
+.input {
+	width: 90%;
+	background-color: var(--bg-secondary); /* rgb(28,28,28) */
+	border: none;
+	border-top: solid var(--border) 2px; /* rgb(45,45,45) */
+	border-top-left-radius: 25px;
+	border-bottom-left-radius: 25px;
+	outline: none;
+	padding-left: 15px;
+	color: var(--text-primary); /* white */
+}
+
+.button {
+	background-color: var(--bg-secondary);
+	color: var(--text-secondary); /* rgb(166,169,172) */
+	padding-left: 15px;
+	padding-right: 15px;
+	border: none;
+	border-top: solid var(--border) 2px;
+	border-top-right-radius: 25px;
+	border-bottom-right-radius: 25px;
+	font-size: 18px;
+	outline: none;
+}
+
+.focus {
+	border-top: solid var(--accent) 2px; /* зелёный */
+}

@@ -1,0 +1,17 @@
+.app {
+    display: flex;
+    height: 100vh;
+    overflow-x: auto
+}
+
+.positionTopHeaderAndContentPage {
+    width: 100%;
+    border-radius: 50px;
+    margin-left: 70px;
+    margin-top: 65px;
+    color: var(--text-primary);
+    flex: 1;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+

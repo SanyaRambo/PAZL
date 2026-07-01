@@ -1,0 +1,23 @@
+.windowLogo {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 40px;
+}
+
+.logoPazl {
+	width: 45px;
+	height: 45px;
+	transition: all 0.3s ease;
+	cursor: pointer;
+	border-radius: 40px;
+}
+
+.logoPazl:hover {
+	width: 46px;
+	height: 46px;
+	border-radius: 20px;
+	background-color: rgb(183, 231, 183);
+	box-shadow: 0px 0px 10px var(--accent-hover);
+	transform: translateY(-2px);
+}

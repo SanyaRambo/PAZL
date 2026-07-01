@@ -1,0 +1,24 @@
+.registration {
+	background: var(--accent); /* #40c057 */
+	border: none;
+	color: #050607; /* можно оставить чёрным */
+	border-radius: 60px;
+	padding: 8px 28px;
+	font-family: 'Inter', system-ui, sans-serif;
+	font-weight: 700;
+	font-size: 14px;
+	letter-spacing: 1px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.registration:hover {
+	background: var(--accent-hover); /* #2f9e44 */
+	transform: translateY(-2px);
+	text-shadow: none;
+}
+
+.registration:active {
+	transform: translateY(1px);
+}

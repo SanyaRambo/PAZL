@@ -1,0 +1,222 @@
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background-color: var(--bg-body); /* заменено */
+	overflow: hidden;
+	color: var(--text-primary); /* добавлено для основного текста */
+}
+
+/* ===== ПЕРЕМЕННЫЕ ДЛЯ ТЕМ ===== */
+:root {
+	--bg-body: rgb(16, 16, 16);
+	--bg-secondary: rgb(31, 31, 31);
+	--top-header: rgba(16, 15, 15, 0.582);
+	--text-primary: #e9ecef;
+	--text-secondary: #adb5bd;
+	--text-muted: #6c757d;
+	--border: rgba(73, 73, 73, 0.56);
+	--card-bg: rgba(255, 255, 255, 0.03);
+	--scrollbar-track: rgba(255, 255, 255, 0.08);
+	--scrollbar-thumb: rgba(255, 255, 255, 0.25);
+	--scrollbar-thumb-hover: rgba(255, 255, 255, 0.4);
+	--scrollbar-thumb-active: rgba(255, 255, 255, 0.6);
+	--bg-hover: rgba(64, 192, 87, 0.08);
+	--border-light: rgba(255, 255, 255, 0.1);
+	--cover: #1a3a2a;
+}
+
+body.dark-theme {
+	--bg-body: rgb(16, 16, 16);
+	--bg-secondary: rgb(31, 31, 31);
+	--top-header: rgba(16, 15, 15, 0.582);
+	--card-stats: rgb(20, 37, 21);
+	--text-primary: #ffffff;
+	--main-card-transperent: rgba(36, 36, 36, 0.384);
+	--text-secondary: #adb5bd;
+	--bg-transperent: #2b2929a7;
+	--toolbar: rgba(55, 55, 248, 0.093);
+	--text-muted: #6c757d;
+	--border: rgba(73, 73, 73, 0.56);
+	--card-bg: rgba(255, 255, 255, 0.03);
+	--scrollbar-track: rgba(255, 255, 255, 0.08);
+	--scrollbar-thumb: rgba(255, 255, 255, 0.25);
+	--scrollbar-thumb-hover: rgba(255, 255, 255, 0.4);
+	--scrollbar-thumb-active: rgba(255, 255, 255, 0.6);
+	--bg-hover: rgba(64, 192, 87, 0.08);
+	--border-light: rgba(255, 255, 255, 0.1);
+	--cover: #1a3a2a;
+}
+
+body.light-theme {
+	--bg-body: #dadada;
+	--main-card-transperent: rgba(255, 255, 255, 0.384);
+	--bg-secondary: #fefefede;
+	--card-stats: rgb(193, 235, 195);
+	--top-header: #dadada8c;
+	--text-primary: #212529;
+	--text-secondary: #495057;
+	--text-muted: #6c757d;
+	--bg-transperent: #8a8a8a63;
+	--toolbar: rgba(38, 38, 181, 0.5);
+	--border: rgba(0, 0, 0, 0.353);
+	--card-bg: rgba(0, 0, 0, 0.03);
+	--scrollbar-track: rgba(0, 0, 0, 0.08);
+	--scrollbar-thumb: rgba(0, 0, 0, 0.2);
+	--scrollbar-thumb-hover: rgba(0, 0, 0, 0.35);
+	--scrollbar-thumb-active: rgba(0, 0, 0, 0.5);
+	--bg-hover: rgba(255, 255, 255, 0.923);
+	--border-light: rgba(0, 0, 0, 0.12);
+	--cover: #00ff80;
+}
+
+
+.ProseMirror-drag-handle,
+.tiptap-drag-handle {
+	visibility: visible !important;
+	opacity: 0.5;
+	pointer-events: auto !important;
+	height: 24px !important;
+	width: 24px !important;
+	background: rgba(0, 0, 0, 0.6);
+	border-radius: 4px;
+	color: var(--text-primary);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: grab;
+	transition: opacity 0.2s;
+	z-index: 10;
+}
+
+.drag-handle {
+	visibility: visible !important;
+	opacity: 0.6;
+	pointer-events: auto !important;
+	width: 28px;
+	height: 28px;
+	backdrop-filter: blur(4px);
+	border-radius: 6px;
+	color: var(--text-primary);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: grab;
+	font-size: 18px;
+	font-weight: bold;
+	transition:
+		opacity 0.2s,
+		background 0.2s;
+	z-index: 10;
+}
+
+.drag-handle::before {
+	content: '⠿'; /* шесть точек */
+	line-height: 1;
+}
+
+.drag-handle:hover {
+	opacity: 1;
+	color: #2f9e44;
+}
+
+img[contenteditable='false'] {
+	user-drag: none;
+	-webkit-user-drag: none;
+}
+
+/* ===== КОРНЕВЫЕ ПЕРЕМЕННЫЕ (некоторые используются в других файлах) ===== */
+:root {
+	--bg-primary: #0c0c0c;
+	--bg-secondary: rgba(255, 255, 255, 0.03);
+	--bg-card: rgba(18, 18, 24, 0.85);
+	--bg-hover: rgba(64, 192, 87, 0.08);
+	--border-subtle: rgba(255, 255, 255, 0.06);
+	--text-primary: #f1f3f5;
+	--text-secondary: #adb5bd;
+	--text-muted: #6c757d;
+	--accent: #40c057;
+	--accent-hover: #2f9e44;
+	--shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.3);
+	--radius-card: 16px;
+	--radius-btn: 40px;
+	--transition-smooth: 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ===== ОБЛАСТЬ КОНТЕНТА ===== */
+#root {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	background-color: var(--bg-body); /* добавлено для фона */
+}
+
+.contentArea {
+	flex: 1;
+	overflow-y: auto;
+	padding-top: 70px;
+	box-sizing: border-box;
+}
+
+/* ===== СКРОЛЛБАРЫ (цвета из переменных) ===== */
+#root::-webkit-scrollbar {
+	width: 8px;
+}
+
+#root::-webkit-scrollbar-track {
+	background: var(--scrollbar-track);
+	border-radius: 4px;
+}
+
+#root::-webkit-scrollbar-thumb {
+	background: var(--scrollbar-thumb);
+	border-radius: 4px;
+	transition: 0.3s;
+}
+
+#root::-webkit-scrollbar-thumb:hover {
+	background: var(--scrollbar-thumb-hover);
+}
+
+#root::-webkit-scrollbar-thumb:active {
+	background: var(--scrollbar-thumb-active);
+}
+
+/* Firefox */
+#root {
+	scrollbar-width: thin;
+	scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+/* ===== ВЛОЖЕННЫЕ КОНТЕЙНЕРЫ ===== */
+#root .scrollable-container {
+	overflow-y: auto;
+}
+
+#root .scrollable-container::-webkit-scrollbar {
+	width: 8px;
+}
+
+#root .scrollable-container::-webkit-scrollbar-track {
+	background: var(--scrollbar-track);
+	border-radius: 4px;
+}
+
+#root .scrollable-container::-webkit-scrollbar-thumb {
+	background: var(--scrollbar-thumb);
+	border-radius: 4px;
+	transition: background 0.3s;
+}
+
+#root .scrollable-container::-webkit-scrollbar-thumb:hover {
+	background: var(--scrollbar-thumb-hover);
+}

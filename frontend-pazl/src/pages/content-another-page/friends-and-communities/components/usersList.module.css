@@ -1,0 +1,283 @@
+
+.userItem {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 15px 20px;
+	border-bottom: 1px solid var(--border);
+	min-height: 70px;
+}
+
+
+.profileSection {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+}
+
+.avatarWrapper {
+	width: 62px;
+	height: 62px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	object-fit: cover;
+	flex-shrink: 0;
+	background: var(--bg-body);
+}
+.profileLink {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	background: transparent !important;
+	text-decoration: none;
+	transition: transform 0.2s;
+}
+.profileLink svg {
+	stroke: white !important;
+	fill: none !important;
+	width: 32px;
+	height: 32px;
+}
+
+
+.infoSection {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	gap: 4px;
+}
+.userName {
+	font-weight: 600;
+	color: var(--text-primary);
+	font-size: 1rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 100%;
+}
+.dateText {
+	color: var(--text-secondary);
+	font-size: 0.7rem;
+}
+
+
+.roleSelect {
+	width: 100%;
+	max-width: 140px;
+	padding: 4px 8px;
+	background: var(--bg-body);
+	color: var(--text-primary);
+	border: 1px solid var(--border-light);
+	border-radius: 6px;
+	font-size: 0.75rem;
+	margin-top: 4px;
+	cursor: pointer;
+	outline: none;
+	transition: border-color 0.2s;
+}
+.roleSelect:focus {
+	border-color: #40c057;
+}
+.roleSelect option {
+	background: var(--bg-body);
+	color: var(--text-primary);
+}
+.roleText {
+	color: var(--text-primary);
+	font-size: 0.75rem;
+	margin-top: 4px;
+}
+
+.action {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex-shrink: 0;
+	margin-left: 12px;
+}
+
+.iconComment,
+.iconPlus,
+.iconMinus,
+.iconSave,
+.iconDelete {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	color: #6c6c6c;
+	border: none;
+	border-radius: 50%;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+.iconComment:hover,
+.iconPlus:hover,
+.iconMinus:hover {
+	background: var(--bg-transperent);
+	color: var(--text-secondary);
+}
+.iconDelete:hover {
+	background: rgba(255, 16, 16, 0.296);
+	color: #ff1212;
+}
+.iconSave:hover {
+	background: rgba(41, 219, 74, 0.197);
+	color: #40c057;
+}
+
+
+.userItemDeleted {
+	background: rgba(255, 0, 0, 0.08);
+	border-left: 4px solid #fa5252;
+	opacity: 0.75;
+	cursor: default;
+	pointer-events: none;
+}
+
+.deletedMessage {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 10px 0;
+	color: #fa5252;
+	font-weight: 600;
+	font-size: 1.1rem;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+}
+.deletedMessage span {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.disableIcon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	color: #4a4a4a;
+	border: none;
+	border-radius: 50%;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	cursor: not-allowed;
+	opacity: 0.5;
+}
+.disableIcon svg {
+	stroke: #4a4a4a;
+}
+
+.Icon {
+	animation: popIn 0.25s ease;
+}
+.successIcon {
+	color: #40c057;
+	animation: popIn 0.25s ease;
+}
+.successIcon svg {
+	stroke: #40c057 !important;
+	fill: none !important;
+}
+@keyframes popIn {
+	0% {
+		transform: scale(0.7);
+		opacity: 0;
+	}
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+.smallLoader {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background-color: var(--text-primary);
+	animation: shrinkAndColor 1.5s ease-in-out infinite;
+}
+
+.dot {
+	width: 10px;
+	height: 15px;
+	border-radius: 50%;
+	background-color: var(--bg-body);
+	animation: shrinkAndColor 1.5s ease-in-out infinite;
+}
+
+@keyframes shrinkAndColor {
+	0% {
+		transform: scale(1);
+		background-color: var(--text-primary);
+	}
+	50% {
+		transform: scale(0.3);
+		background-color: green;
+	}
+	100% {
+		transform: scale(1);
+		background-color: var(--text-primary);
+	}
+}
+
+.listContainer {
+	padding: 8px 0;
+}
+
+.listContainer {
+	padding: 8px 0;
+}
+
+.error {
+	text-align: center;
+	padding: 40px;
+	color: #fa5252;
+}
+
+.empty {
+	text-align: center;
+	padding: 40px 20px;
+	color: #868e96;
+	font-size: 1rem;
+	min-height: 200px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.listContainer {
+	padding: 8px 0;
+}
+
+.error {
+	text-align: center;
+	padding: 40px;
+	color: #fa5252;
+}
+
+.empty {
+	text-align: center;
+	padding: 40px 20px;
+	color: #868e96;
+	font-size: 1rem;
+	min-height: 200px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}

@@ -1,0 +1,170 @@
+.planner {
+	width: 100%;
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	flex-wrap: wrap;
+	gap: 12px;
+}
+.subtitle {
+	font-size: 1.4rem;
+	font-weight: 600;
+	color: var(--text-primary);
+	margin: 0;
+}
+.controls {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.filterBtn {
+	padding: 6px 14px;
+	border-radius: 40px;
+	background: transparent;
+	border: 1px solid var(--border);
+	color: var(--text-secondary);
+	cursor: pointer;
+	font-size: 0.85rem;
+	transition: 0.2s;
+}
+.filterBtn:hover {
+	background: rgba(255, 255, 255, 0.04);
+}
+.filterBtn.activeFilter {
+	background: rgba(64, 192, 87, 0.15);
+	border-color: rgba(64, 192, 87, 0.25);
+	color: var(--text-primary);
+}
+.addButton {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 18px;
+	background: rgba(64, 192, 87, 0.15);
+	border: 1px solid rgba(64, 192, 87, 0.2);
+	border-radius: 40px;
+	color: var(--text-primary);
+	font-weight: 500;
+	cursor: pointer;
+	transition: 0.2s;
+}
+.addButton:hover {
+	background: rgba(64, 192, 87, 0.3);
+}
+
+.content {
+	display: grid;
+	grid-template-columns: 300px 1fr;
+	gap: 24px;
+}
+.calendarWrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+.calendar {
+	background: #dadada !important;
+	border: 1px solid var(--border) !important;
+	border-radius: 16px !important;
+	padding: 12px !important;
+	width: 100% !important;
+	color: black !important;
+}
+
+.calendar .react-calendar__navigation button {
+	color: var(--text-primary) !important;
+}
+.calendar .react-calendar__month-view__weekdays {
+	color: var(--text-secondary) !important;
+}
+.calendar .react-calendar__tile {
+	color: var(--text-primary) !important;
+	background: transparent !important;
+}
+.calendar .react-calendar__tile:enabled:hover {
+	background: rgba(64, 192, 87, 0.1) !important;
+}
+.calendar .react-calendar__tile--active {
+	background: rgba(64, 192, 87, 0.2) !important;
+	border-radius: 8px !important;
+}
+.calendar .react-calendar__tile--now {
+	background: rgba(255, 255, 255, 0.03) !important;
+}
+.calendar .react-calendar__tile--now:enabled:hover {
+	background: rgba(64, 192, 87, 0.1) !important;
+}
+
+.selectedDate {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px 12px;
+	background: rgba(255, 255, 255, 0.02);
+	border-radius: 12px;
+	font-size: 0.95rem;
+	color: var(--text-primary);
+}
+.clearDate {
+	background: none;
+	border: none;
+	color: var(--text-secondary);
+	cursor: pointer;
+}
+.clearDate:hover {
+	color: var(--text-secondary);
+}
+.dot {
+	width: 6px;
+	height: 6px;
+	background: #40c057;
+	border-radius: 50%;
+	margin: 4px auto 0;
+}
+
+.taskList {
+	background: var(--bg-body);
+	border-radius: 16px;
+	padding: 16px;
+	border: 1px solid var(--border);
+	max-height: 550px;
+	overflow-y: auto;
+}
+.group {
+	margin-bottom: 16px;
+}
+.groupTitle {
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: var(--text-secondary);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin-bottom: 8px;
+}
+.empty,
+.loader,
+.error {
+	text-align: center;
+	padding: 30px 0;
+	color: #868e96;
+}
+.error {
+	color: #fa5252;
+}
+
+@media (max-width: 768px) {
+	.content {
+		grid-template-columns: 1fr;
+	}
+	.header {
+		flex-direction: column;
+		align-items: stretch;
+	}
+	.controls {
+		justify-content: flex-start;
+	}
+}

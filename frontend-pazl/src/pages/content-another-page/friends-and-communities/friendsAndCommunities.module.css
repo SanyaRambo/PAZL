@@ -1,0 +1,105 @@
+.FAC {
+	display: flex;
+	justify-content: center;
+	gap: 24px;
+	padding: 24px 20px 20px;
+	height: 100%;
+	max-height: calc(100vh - 80px);
+	overflow: hidden;
+}
+
+.tabs {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	width: 200px;
+	background: var(--bg-secondary);
+	border-radius: 16px;
+	padding: 16px 12px;
+	border: 1px solid var(--border);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+	height: fit-content;
+	max-height: 70vh;
+	overflow-y: auto;
+	flex-shrink: 0;
+}
+.tabs::-webkit-scrollbar {
+	width: 4px;
+}
+.tabs::-webkit-scrollbar-track {
+	background: transparent;
+}
+.tabs::-webkit-scrollbar-thumb {
+	background: rgba(64, 192, 87, 0.4);
+	border-radius: 4px;
+}
+
+.tab {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px 16px;
+	border-radius: 10px;
+	background: transparent;
+	color: var(--text-primary);
+	font-weight: 500;
+	font-size: 0.9rem;
+	text-decoration: none;
+	transition: all 0.25s ease;
+	cursor: pointer;
+	border: 1px solid transparent;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.tab:hover {
+	background: rgba(255, 255, 255, 0.04);
+	color: var(--text-secondary);
+}
+.tab.active {
+	background: rgba(64, 192, 87, 0.12);
+	color: var(--text-secondary);
+	border-color: rgba(64, 192, 87, 0.25);
+}
+
+.usersTable {
+	flex: 1;
+	max-width: 700px;
+	background: var(--bg-secondary);;
+	border-radius: 16px;
+	border: 1px solid var(--border);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+	padding: 0;
+	height: calc(100vh - 140px);
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+.usersTable::-webkit-scrollbar {
+	width: 4px;
+}
+.usersTable::-webkit-scrollbar-track {
+	background: transparent;
+}
+.usersTable::-webkit-scrollbar-thumb {
+	background: rgba(64, 192, 87, 0.4);
+	border-radius: 4px;
+}
+
+.usersNot {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+	color: #6c6c6c;
+	font-size: 1.1rem;
+	font-weight: 400;
+	padding: 40px 20px;
+	text-align: center;
+}
+
+.smallLoader {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 20px;
+}

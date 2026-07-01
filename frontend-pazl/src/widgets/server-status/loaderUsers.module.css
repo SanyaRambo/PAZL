@@ -1,0 +1,79 @@
+.userItem {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 15px 20px;
+	border-bottom: 1px solid var(--border);
+	min-height: 70px;
+	min-width: 400px;
+
+}
+
+.profileSection {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex: 2;
+}
+
+.skeletonCircle {
+	width: 62px;
+	height: 62px;
+	border-radius: 50%;
+	background: linear-gradient(90deg, var(--bg-body) 25%, var(--bg-secondary) 50%, var(--bg-body) 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shine 2s infinite;
+}
+
+.skeletonText {
+	height: 16px;
+	border-radius: 4px;
+	background: linear-gradient(90deg, var(--bg-body) 25%, var(--bg-secondary) 50%, var(--bg-body) 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shine 2s infinite;
+}
+
+.textLine1 {
+	width: 120px;
+	margin-bottom: 8px;
+}
+
+.textLine2 {
+	width: 80px;
+}
+
+.infoSection {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	gap: 8px;
+}
+
+.action {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	margin-left: 20px;
+	max-width: 200px;
+}
+
+.skeletonDot {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background: linear-gradient(90deg, var(--bg-body) 25%, var(--bg-secondary) 50%, var(--bg-body) 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shine 2s infinite;
+	animation-delay: calc(var(--delay) * 0.2s);
+}
+
+@keyframes skeleton-shine {
+	0% {
+		background-position: -200% 0;
+	}
+	100% {
+		background-position: 200% 0;
+	}
+}

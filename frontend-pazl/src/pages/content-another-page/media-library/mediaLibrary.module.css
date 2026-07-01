@@ -1,0 +1,95 @@
+.container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 20px 24px;
+	color: var(--text-primary);
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 16px;
+	margin-bottom: 32px;
+	padding-bottom: 16px;
+	border-bottom: 1px solid var(--border);
+}
+
+.title {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 1.8rem;
+	font-weight: 700;
+	margin: 0;
+}
+.titleIcon {
+	stroke: #40c057;
+}
+
+.tabs {
+	display: flex;
+	gap: 6px;
+	background: rgba(255, 255, 255, 0.04);
+	padding: 4px;
+	border-radius: 40px;
+}
+
+.tab {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 20px;
+	border: none;
+	border-radius: 30px;
+	background: transparent;
+	color: var(--text-secondary);
+	cursor: pointer;
+	font-size: 0.9rem;
+	font-weight: 500;
+	transition: all 0.25s ease;
+}
+.tab:hover {
+	color: var(--text-primary);
+	background: rgba(255, 255, 255, 0.05);
+}
+.tab.active {
+	background: rgba(64, 192, 87, 0.2);
+	color: var(--text-primary);
+	box-shadow: 0 0 0 1px rgba(64, 192, 87, 0.2);
+}
+
+.counter {
+	font-size: 0.9rem;
+	color: var(--text-body);
+	background: rgba(255, 255, 255, 0.04);
+	padding: 4px 14px;
+	border-radius: 40px;
+	white-space: nowrap;
+}
+
+.empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 80px 20px;
+	color: var(--text-secondary);
+	text-align: center;
+}
+.empty svg {
+	opacity: 0.3;
+	margin-bottom: 16px;
+}
+.empty p {
+	max-width: 400px;
+	font-size: 1.1rem;
+	line-height: 1.5;
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: 24px;
+}

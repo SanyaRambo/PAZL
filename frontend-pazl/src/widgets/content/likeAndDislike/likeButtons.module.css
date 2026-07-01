@@ -1,0 +1,174 @@
+.likeAndDislike {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	margin-top: 8px;
+	border-radius: 20px;
+}
+
+.likeButton,
+.dislikeButton {
+	display: flex;
+	align-items: center;
+	padding: 6px 6px;
+	gap: 5px;
+	background: var(--bg-secondary);
+	border-radius: 20px;
+	border: none;
+	cursor: pointer;
+	font-size: 14px;
+	transition: all 0.2s ease;
+	color: var(--text-primary);
+	font-weight: bold;
+}
+
+.likeButton:disabled,
+.dislikeButton:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.likeButton i,
+.dislikeButton i {
+	font-size: 14px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+	.likeAndDislike {
+		gap: 8px;
+	}
+
+	.likeButton,
+	.dislikeButton {
+		padding: 5px 10px;
+		font-size: 13px;
+	}
+}
+
+@media (max-width: 480px) {
+	.likeAndDislike {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.likeButton,
+	.dislikeButton {
+		justify-content: center;
+	}
+}
+
+/* ===== АНИМАЦИИ ДЛЯ ИКОНОК (активные состояния) ===== */
+.likeButton.active svg {
+	animation: gradientLike 2s ease-in-out infinite;
+}
+
+.dislikeButton.active svg {
+	animation: gradientDislike 2s ease-in-out infinite;
+}
+
+@keyframes gradientLike {
+	0% {
+		stroke: #00ff51;
+	}
+	33% {
+		stroke: #00cc33;
+	}
+	66% {
+		stroke: #00ff66;
+	}
+	100% {
+		stroke: #00ff51;
+	}
+}
+
+@keyframes gradientDislike {
+	0% {
+		stroke: #ff1e00;
+	}
+	33% {
+		stroke: #ff0400;
+	}
+	66% {
+		stroke: #ff0000;
+	}
+	100% {
+		stroke: #ff1e00;
+	}
+}
+
+.likeButton:hover svg {
+	animation: gradientLike 2s ease-in-out infinite;
+}
+
+.dislikeButton:hover svg {
+	animation: gradientDislike 2s ease-in-out infinite;
+}
+
+@keyframes gradientLike {
+	0% {
+		stroke: #00ff51;
+	}
+	33% {
+		stroke: #00cc33;
+	}
+	66% {
+		stroke: #00ff66;
+	}
+	100% {
+		stroke: #00ff51;
+	}
+}
+
+@keyframes gradientDislike {
+	0% {
+		stroke: #ff1e00;
+	}
+	33% {
+		stroke: #ff0400;
+	}
+	66% {
+		stroke: #ff0000;
+	}
+	100% {
+		stroke: #ff1e00;
+	}
+}
+
+.likeButton.active:hover svg {
+	animation: gradientLikeHover 2s ease-in-out infinite;
+}
+
+.dislikeButton.active:hover svg {
+	animation: gradientDislikeHover 2s ease-in-out infinite;
+}
+
+@keyframes gradientLikeHover {
+	0% {
+		stroke: #00ff08;
+	}
+	33% {
+		stroke: #363535;
+	}
+	66% {
+		stroke: #363535;
+	}
+	100% {
+		stroke: #3af440;
+	}
+}
+
+@keyframes gradientDislikeHover {
+	0% {
+		stroke: #ff1e00;
+	}
+	33% {
+		stroke: #363535;
+	}
+	66% {
+		stroke: #373635;
+	}
+	100% {
+		stroke: #ff1e00;
+	}
+}

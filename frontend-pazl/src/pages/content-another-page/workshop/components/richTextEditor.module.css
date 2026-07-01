@@ -1,0 +1,301 @@
+.editorCard {
+	background: transparent;
+	margin: 10px 15px;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.statusEditor {
+	display: flex;
+	width: 100%;
+	height: 90vh;
+	justify-content: center;
+	align-items: center;
+	color: var(--text-secondary);
+}
+
+.inputField {
+	background: transparent;
+	border: none;
+	padding: 14px 18px;
+	font-size: 1rem;
+	color: var(--text-primary);
+	width: 100%;
+	border-bottom: 1px solid var(--border);
+	transition: border-color 0.2s;
+}
+.inputField:focus {
+	outline: none;
+	border-bottom-color: var(--accent);
+}
+
+.imageUploadArea {
+	background: var(--bg-transperent);
+	border: 2px dashed var(--border);
+	border-radius: 24px;
+	padding: 20px;
+	text-align: center;
+	transition: all 0.2s;
+}
+.imageUploadArea:hover {
+	border-color: var(--accent);
+	background: rgba(0, 0, 0, 0.3);
+}
+.imageLabel {
+	display: block;
+	margin-bottom: 12px;
+	font-weight: 500;
+	color: var(--text-secondary);
+}
+.imageUploadArea .inputField {
+	background: rgba(0, 0, 0, 0.3);
+	border: none;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+	margin-bottom: 12px;
+	color: white;
+}
+.imageUploadArea input[type='file'] {
+	width: 100%;
+	padding: 10px;
+	background: rgba(0, 0, 0, 0.3);
+	border: none;
+	border-radius: 40px;
+	color: white;
+	cursor: pointer;
+}
+.imageUploadArea input[type='file']::file-selector-button {
+	background: var(--accent);
+	border: none;
+	padding: 6px 16px;
+	border-radius: 40px;
+	color: white;
+	margin-right: 12px;
+	cursor: pointer;
+}
+.imageUploadArea input[type='file']::file-selector-button:hover {
+	background: var(--accent-hover);
+}
+.imagePreview {
+	max-width: 100%;
+	max-height: 200px;
+	object-fit: cover;
+	border-radius: 16px;
+	margin-top: 16px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Кнопки действий */
+.actionButtons {
+	display: flex;
+	width: 100%;
+	gap: 12px;
+	margin-bottom: 8px;
+	justify-content: space-between;
+	flex-direction: row;
+	border-left: solid var(--border) 1px;
+	border-right: solid var(--border) 1px;
+	border-top: solid var(--border) 1px;
+}
+.leftAction {
+	display: flex;
+	width: 1000px;
+}
+
+
+.actionButton {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: linear-gradient(195deg, #78c7e4, #3232c2);
+	backdrop-filter: blur(8px);
+	border: none;
+	padding: 8px 20px;
+	font-weight: 500;
+	color: rgb(255, 255, 255);
+	cursor: pointer;
+	border: solid rgb(51, 51, 51) 1px;
+	transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	will-change: transform, background, box-shadow, opacity;
+}
+
+.actionButton:hover {
+	background: linear-gradient(125deg, #e41111, #c25432);
+	transform: scale(1.04);
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+.actionButton:active {
+	transform: scale(0.97);
+}
+
+.actionButtonDanger {
+	background: linear-gradient(135deg, #08bdff, #3232c2);
+}
+.actionButtonDanger:hover {
+	background: linear-gradient(135deg, #ff0000, #e1a20e);
+}
+
+.actionButtonSuccess {
+	background: linear-gradient(135deg, #08bdff, #3232c2);
+}
+.actionButtonSuccess:hover {
+	background: linear-gradient(155deg, #13da4f, #3232c2);
+}
+
+
+.actionButtonHidden {
+	opacity: 0;
+	transform: scale(0.95);
+	pointer-events: none;
+	transition:
+		opacity 0.3s ease,
+		transform 0.3s ease;
+}
+
+
+.buttonText {
+	display: inline-block;
+	transition:
+		opacity 0.25s ease,
+		transform 0.25s ease;
+}
+
+
+.editorContent {
+	background: var(--bg-secondary);
+	border: none;
+	padding: 0;
+	margin: auto;
+	width: 70%;
+	min-height: 300px;
+	border: 1px solid var(--border);
+	color: var(--text-primary);
+}
+.editorContent :global(.ProseMirror) {
+	outline: none;
+	padding: 20px 24px;
+}
+.editorContent :global(.ProseMirror p.is-editor-empty:first-child::before) {
+	content: attr(data-placeholder);
+	color: rgba(255, 255, 255, 0.4);
+	pointer-events: none;
+	height: 0;
+}
+
+.toolbar {
+	display: flex;
+	gap: 8px;
+	justify-content: center;
+	margin: auto;
+	padding: 8px 12px;
+	background: var(--toolbar);
+	backdrop-filter: blur(8px);
+	border-radius: 40px;
+	margin-bottom: 16px;
+	flex-wrap: wrap;
+	position: sticky;
+	top: 10px;
+	z-index: 85123;
+	align-items: center;
+}
+.divider {
+	width: 1px;
+	height: 24px;
+	background-color: var(--bg-transperent);
+	margin: 0 4px;
+}
+.toolbar button {
+	background: rgba(255, 255, 255, 0.1);
+	border: none;
+	color: #f1f3f5;
+	width: 32px;
+	height: 32px;
+	border-radius: 8px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+.toolbar button:hover {
+	background: rgba(64, 192, 87, 0.6);
+}
+.toolbar .isActive {
+	background: #40c057;
+	color: white;
+}
+
+.editorContent pre {
+	background: #0d0d16;
+	border-radius: 12px;
+	padding: 1rem;
+	overflow-x: auto;
+	font-size: 0.85rem;
+}
+.editorContent pre code {
+	color: white;
+	font-family: 'Fira Code', monospace;
+}
+.editorContent img {
+	max-width: 60%;
+	max-height: 300px;
+	width: auto;
+	height: auto;
+	object-fit: contain;
+	border-radius: 12px;
+	margin: 1rem auto;
+	display: block;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.content img {
+	max-width: 80%;
+	max-height: 400px;
+	width: auto;
+	height: auto;
+	object-fit: contain;
+	border-radius: 12px;
+	margin: 1rem auto;
+	display: block;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.content p,
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5,
+.content h6 {
+	text-align: left;
+}
+.content [style='text-align: center'] {
+	text-align: center !important;
+}
+.content [style='text-align: right'] {
+	text-align: right !important;
+}
+.content [style='text-align: justify'] {
+	text-align: justify !important;
+}
+
+.buttonText {
+	display: inline-block;
+	animation: popIn 0.25s ease;
+}
+
+@media (max-width: 640px) {
+	.container {
+		padding: 16px;
+	}
+	.title {
+		font-size: 1.6rem;
+	}
+	.coverImage {
+		max-height: 200px;
+	}
+	.content pre {
+		font-size: 0.75rem;
+		padding: 0.75rem;
+	}
+}

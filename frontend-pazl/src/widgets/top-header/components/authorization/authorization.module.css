@@ -1,0 +1,22 @@
+.authorization {
+	background: transparent;
+	border: 1.5px solid var(--accent); /* rgb(52,193,52) */
+	color: var(--accent); /* rgb(70,215,70) */
+	border-radius: 60px;
+	padding: 8px 28px;
+	font-family: 'Inter', system-ui, sans-serif;
+	font-weight: 600;
+	font-size: 14px;
+	letter-spacing: 1px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+	margin-right: 10px;
+}
+
+.authorization:hover {
+	background: var(--accent);
+	color: #050607;
+	transform: translateY(-1px);
+	text-shadow: none;
+}
