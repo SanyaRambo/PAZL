@@ -1,6 +1,6 @@
 const express = require("express");
 const authenticated = require("../middlewares/authenticated");
-const asyncHandler = require("../middlewares/asyncHandler"); 
+const asyncHandler = require("../middlewares/asyncHandler");
 const UserStats = require("../models/UserStats");
 
 const router = express.Router();
@@ -11,12 +11,13 @@ router.get(
 	"/stats",
 	authenticated,
 	asyncHandler(async (req, res) => {
-		const stats = await UserStats.findOne({ userId: req.user.id });
+
+		const stats = await UserStats.findOne({ userId: req.user.id }).lean({ virtuals: true });
+
 		if (!stats) {
-			return res
-				.status(404)
-				.json({ res: null, error: "Статистика не найдена" });
+			return res.status(404).json({ res: null, error: "Статистика не найдена" });
 		}
+
 		res.json({ res: stats, error: null });
 	}),
 );

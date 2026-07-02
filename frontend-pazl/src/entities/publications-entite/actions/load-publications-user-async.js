@@ -2,23 +2,25 @@ import { setPublicationsUser } from './set-publications-user';
 import { setPublicationsLoading } from './set-publications-loading';
 import { request } from '../../../shared/utils/request';
 
-export const loadPublicationsUserAsync = () => async (dispatch) => {
-	await dispatch(setPublicationsLoading(true));
-	try {
-		const data = await request(
-			`/api/workshop/publicationsUser`,
-			'GET',
-		);
-
-
-		if (data.error) throw new Error(data.error);
-
-
-
-		await dispatch(setPublicationsUser(data.res.items));
-	} catch (e) {
-		await dispatch(setPublicationsUser([], e.message));
-	} finally {
-		dispatch(setPublicationsLoading(false));
-	}
-};
+export const loadPublicationsUserAsync =
+	(params = {}) =>
+	async (dispatch) => {
+		dispatch(setPublicationsLoading(true));
+		try {
+			const { sortBy = 'createdAt', order = 'desc' } = params;
+			const result = await request(
+				`/api/media-library/publicationsUser?sortBy=${sortBy}&order=${order}`,
+				'GET',
+			);
+			if (result.res) {
+				dispatch(setPublicationsUser(result.res.items));
+			} else {
+				throw new Error(result.error);
+			}
+		} catch (error) {
+			dispatch(setPublicationsUser([], error.message));
+		} finally {
+			dispatch(setPublicationsLoading(false));
+		}
+	};
+	

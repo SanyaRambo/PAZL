@@ -5,7 +5,7 @@ const DEFAULT_LIMIT = 8;
 
 export const usePaginatedData = (
 	baseURL,
-	inputValue,
+	inputValue = '',
 	limit = DEFAULT_LIMIT,
 	currentUserSession = '',
 ) => {
@@ -14,18 +14,17 @@ export const usePaginatedData = (
 	const [offset, setOffset] = useState(0);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const [extraParams, setExtraParams] = useState({});
 
-	// Реф для предотвращения параллельных запросов
 	const isLoadingRef = useRef(false);
-	// Реф для хранения текущего offset, чтобы не зависеть от состояния в замыкании
 	const offsetRef = useRef(offset);
 
-	// Синхронизируем реф с состоянием offset
+
 	useEffect(() => {
 		offsetRef.current = offset;
 	}, [offset]);
 
-	// Сброс при изменении поиска или сессии
+
 	useEffect(() => {
 		setData([]);
 		setHasMore(true);
@@ -34,17 +33,14 @@ export const usePaginatedData = (
 		setError(null);
 	}, [inputValue, currentUserSession]);
 
-	// Основная функция загрузки – стабильная (зависит только от стабильных вещей)
+
 	const loadData = useCallback(
-		async (reset = false) => {
-			// Защита от одновременных вызовов
+		async (reset = false, overrideParams = {}) => {
 			if (isLoadingRef.current) return;
 
-			// Определяем, какой offset использовать
 			let currentOffset;
 			if (reset) {
 				currentOffset = 0;
-				// Оптимистично очищаем данные при ручном сбросе (refetch)
 				setData([]);
 				setHasMore(true);
 				setOffset(0);
@@ -53,15 +49,34 @@ export const usePaginatedData = (
 				currentOffset = offsetRef.current;
 			}
 
+
+			const allParams = {
+				limit,
+				offset: currentOffset,
+				search: inputValue || '',
+				...extraParams,
+				...overrideParams,
+			};
+
 			try {
 				isLoadingRef.current = true;
 				setLoading(true);
 				setError(null);
 
+				
+				const urlParams = new URLSearchParams();
+				Object.entries(allParams).forEach(([key, value]) => {
+					if (value !== undefined && value !== null && value !== '') {
+						urlParams.append(key, String(value));
+					}
+				});
+
 				const hasQuery = baseURL.includes('?');
 				const url = hasQuery
-				? `${baseURL}&limit=${limit}&offset=${currentOffset}&search=${inputValue || ''}`
-				: `${baseURL}?limit=${limit}&offset=${currentOffset}&search=${inputValue || ''}`;
+					? `${baseURL}&${urlParams.toString()}`
+					: `${baseURL}?${urlParams.toString()}`;
+
+				console.log('📡 Запрос:', url); // для отладки
 
 				const result = await request(url, 'GET', null, currentUserSession);
 
@@ -76,35 +91,48 @@ export const usePaginatedData = (
 					}
 					setHasMore(more);
 
-					// Обновляем offset: старый + количество новых элементов
 					const newOffset = currentOffset + newItems.length;
 					setOffset(newOffset);
 					offsetRef.current = newOffset;
 				} else {
-					// Если ошибка от сервера в формате {res: null, error: ...}
 					throw new Error(result.error);
 				}
 			} catch (err) {
+				console.error('❌ Ошибка загрузки:', err);
 				setError(err.message);
 			} finally {
 				setLoading(false);
 				isLoadingRef.current = false;
 			}
 		},
-		[baseURL, limit, inputValue, currentUserSession],
-	); // Минимум зависимостей!
+		[baseURL, limit, inputValue, currentUserSession, extraParams],
+	);
 
-	// loadMore – просто вызывает loadData без сброса
+	// ✅ loadMore – подгружаем следующую порцию
 	const loadMore = useCallback(() => {
 		if (hasMore && !isLoadingRef.current && !loading) {
 			loadData(false);
 		}
 	}, [hasMore, loading, loadData]);
 
-	// refetch – принудительная перезагрузка с начала
-	const refetch = useCallback(() => {
-		loadData(true);
-	}, [loadData]);
+	// ✅ refetch – перезагружаем с начала, можно передать новые параметры
+	const refetch = useCallback(
+		(newParams = {}) => {
+			// Сохраняем новые параметры в состояние
+			setExtraParams((prev) => ({ ...prev, ...newParams }));
+			// Перезагружаем с новыми параметрами
+			loadData(true, newParams);
+		},
+		[loadData],
+	);
 
-	return { data, loading, error, hasMore, loadMore, refetch };
+	return {
+		data,
+		loading,
+		error,
+		hasMore,
+		loadMore,
+		refetch,
+		setExtraParams, // для гибкости
+	};
 };

@@ -21,7 +21,7 @@ const UserStatsSchema = new mongoose.Schema({
 		likesGiven: { type: Number, default: 0 },
 		dislikesGiven: { type: Number, default: 0 },
 	},
-	comments: { type: Number, default: 0 }, 
+	comments: { type: Number, default: 0 },
 	tasks: {
 		total: { type: Number, default: 0 },
 		done: { type: Number, default: 0 },
@@ -45,5 +45,7 @@ const UserStatsSchema = new mongoose.Schema({
 		},
 	],
 });
+
+
 
 module.exports = mongoose.model("UserStats", UserStatsSchema);
