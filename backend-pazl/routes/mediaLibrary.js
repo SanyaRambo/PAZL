@@ -1,21 +1,64 @@
 const express = require("express");
 const authenticated = require("../middlewares/authenticated");
 const { getLikedPosts } = require("../controllers/post");
+const { getUserPosts } = require("../controllers/post");
 const mapPost = require("../helpers/mapPost");
+const asyncHandler = require("../middlewares/asyncHandler");
 
 const router = express.Router({ mergeParams: true });
 
 router.use(authenticated);
 
-router.get("/publicationsLiked", authenticated, async (req, res) => {
-	try {
-		const { limit = 10, offset = 0, search } = req.query;
+// ==================== GET ====================
+
+router.get(
+	"/publicationsUser",
+	asyncHandler(async (req, res) => {
+		const {
+			limit = 10,
+			offset = 0,
+			search,
+			isPublished,
+			sortBy,
+			order,
+		} = req.query;
+		const includeIsPublishedFlag = isPublished === "true";
+
+		const postsListData = await getUserPosts({
+			limit,
+			offset,
+			search,
+			isPublished: includeIsPublishedFlag,
+			author: req.user.id,
+			sortBy,
+			order,
+		});
+
+		res.send({
+			res: {
+				items: postsListData.items.map((post) =>
+					mapPost(post, req.user?.id),
+				),
+				totalCount: postsListData.totalCount,
+				hasMore: postsListData.hasMore,
+			},
+			error: null,
+		});
+	}),
+);
+
+router.get(
+	"/publicationsLiked",
+	asyncHandler(async (req, res) => {
+		const { limit = 10, offset = 0, search, sortBy, order } = req.query;
 		const userId = req.user.id;
 
 		const postsListData = await getLikedPosts(userId, {
 			limit,
 			offset,
 			search,
+			sortBy,
+			order,
 		});
 
 		res.send({
@@ -26,9 +69,7 @@ router.get("/publicationsLiked", authenticated, async (req, res) => {
 			},
 			error: null,
 		});
-	} catch (e) {
-		res.send({ res: null, error: e.message });
-	}
-});
+	}),
+);
 
 module.exports = router;

@@ -5,16 +5,21 @@ const fs = require("fs").promises;
 const path = require("path");
 const { updateUserStats } = require("../service/statsService");
 const mapPost = require("../helpers/mapPost");
+const { buildSortOptions } = require("../helpers/sortHelpers");
+const { buildQuery } = require("../helpers/queryHelpers");
+const {
+	POST_FEED_SORT_FIELDS,
+	POST_USER_SORT_FIELDS,
+	POST_LIKED_SORT_FIELDS,
+} = require("../constants/sortFields");
 const ROLES = require("../constants/roles");
 
-// add
 async function addPost(post) {
 	const newPost = await Post.create(post);
 	await newPost.populate("author");
 	return newPost;
 }
 
-// edit – с проверкой владельца
 async function updatePost(postId, userId, postData) {
 	const post = await Post.findById(postId);
 	if (!post) throw new Error("Post not found");
@@ -69,14 +74,26 @@ async function deleteImageFile(imageUrl) {
 	}
 }
 
-async function getPosts({ limit, offset, search, isPublished = true, author }) {
-	let query = {};
-	if (search) query.title = { $regex: search, $options: "i" };
-	if (isPublished) query.isPublished = { $eq: true };
-	if (author) query.author = { $eq: author };
+async function getPosts({
+	limit,
+	offset,
+	search,
+	isPublished = true,
+	author,
+	sortBy,
+	order,
+}) {
+	const query = buildQuery({ search, isPublished, author });
+
+	const sortOptions = buildSortOptions(
+		sortBy,
+		order,
+		POST_FEED_SORT_FIELDS,
+		"publishedAt",
+	);
 	const [posts, total] = await Promise.all([
 		Post.find(query)
-			.sort({ publishedAt: -1, _id: 1 })
+			.sort(sortOptions)
 			.skip(Number(offset))
 			.limit(Number(limit))
 			.populate("author"),
@@ -95,14 +112,22 @@ async function getUserPosts({
 	search,
 	isPublished = true,
 	author,
+	sortBy,
+	order,
 }) {
-	let query = {};
-	if (search) query.title = { $regex: search, $options: "i" };
-	if (isPublished) query.isPublished = { $eq: true };
-	if (author) query.author = { $eq: author };
+	const query = buildQuery({ search, isPublished, author });
+
+
+	const sortOptions = buildSortOptions(
+		sortBy,
+		order,
+		POST_USER_SORT_FIELDS,
+		"createdAt",
+	);
+
 	const [posts, total] = await Promise.all([
 		Post.find(query)
-			.sort({ publishedAt: -1, _id: 1 })
+			.sort(sortOptions)
 			.skip(Number(offset))
 			.limit(Number(limit))
 			.populate("author"),
@@ -115,12 +140,19 @@ async function getUserPosts({
 	};
 }
 
-async function getLikedPosts(userId, { limit, offset, search }) {
-	let query = { likes: { $elemMatch: { userId } } };
-	if (search) query.title = { $regex: search, $options: "i" };
+async function getLikedPosts(userId, { limit, offset, search, sortBy, order }) {
+	let query = buildQuery({ search, userId });
+
+	const sortOptions = buildSortOptions(
+		sortBy,
+		order,
+		POST_LIKED_SORT_FIELDS,
+		"likedAt",
+	);
+
 	const [posts, total] = await Promise.all([
 		Post.find(query)
-			.sort({ "likes.likedAt": -1, _id: 1 })
+			.sort(sortOptions)
 			.skip(Number(offset))
 			.limit(Number(limit))
 			.populate("author"),

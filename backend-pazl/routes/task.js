@@ -8,13 +8,17 @@ const {
 } = require("../controllers/task");
 const { generateDate } = require("../helpers/dataHelpers");
 const authenticated = require("../middlewares/authenticated");
+const asyncHandler = require("../middlewares/asyncHandler"); 
 
 const router = express.Router();
 
 router.use(authenticated);
 
-router.get("/", async (req, res) => {
-	try {
+// ==================== GET ====================
+
+router.get(
+	"/",
+	asyncHandler(async (req, res) => {
 		const { search } = req.query;
 		const tasks = await getTasks(req.user.id, search || null);
 
@@ -22,16 +26,14 @@ router.get("/", async (req, res) => {
 			res: tasks.map((task) => mapTask(task)) || null,
 			error: null,
 		});
-	} catch (e) {
-		res.send({
-			res: null,
-			error: e.message,
-		});
-	}
-});
+	}),
+);
 
-router.post("/", async (req, res) => {
-	try {
+// ==================== POST ====================
+
+router.post(
+	"/",
+	asyncHandler(async (req, res) => {
 		const newTask = await addTask({
 			userId: req.user.id,
 			title: req.body.title,
@@ -43,17 +45,14 @@ router.post("/", async (req, res) => {
 			res: mapTask(newTask),
 			error: null,
 		});
-	} catch (e) {
-		res.send({
-			res: null,
-			error: e.message,
-		});
-		console.log(e.message);
-	}
-});
+	}),
+);
 
-router.patch("/:taskId", async (req, res) => {
-	try {
+// ==================== PATCH ====================
+
+router.patch(
+	"/:taskId",
+	asyncHandler(async (req, res) => {
 		const updatedTask = await updateTask(req.user.id, req.params.taskId, {
 			title: req.body.title,
 			description: req.body.description,
@@ -66,29 +65,21 @@ router.patch("/:taskId", async (req, res) => {
 			res: mapTask(updatedTask),
 			error: null,
 		});
-	} catch (e) {
-		res.send({
-			res: null,
-			error: e.message,
-		});
-		console.log(e.message);
-	}
-});
+	}),
+);
 
-router.delete("/:taskId", async (req, res) => {
-	try {
-		const deletedTask = await deleteTask(req.user.id, req.params.taskId);
+// ==================== DELETE ====================
+
+router.delete(
+	"/:taskId",
+	asyncHandler(async (req, res) => {
+		await deleteTask(req.user.id, req.params.taskId);
 
 		res.send({
 			res: null,
 			error: null,
 		});
-	} catch (e) {
-		res.send({
-			res: null,
-			error: e.message,
-		});
-	}
-});
+	}),
+);
 
 module.exports = router;

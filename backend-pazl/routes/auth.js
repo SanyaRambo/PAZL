@@ -1,13 +1,17 @@
 const express = require("express");
 const { register, login } = require("../controllers/user");
 const mapUser = require("../helpers/mapUser");
-const authenticated = require("../middlewares/authenticated")
+const authenticated = require("../middlewares/authenticated");
+const asyncHandler = require("../middlewares/asyncHandler"); 
 const { generateDate } = require("../helpers/dataHelpers");
 
 const router = express.Router({ mergeParams: true });
 
-router.post("/register", async (req, res) => {
-	try {
+// ==================== POST ====================
+
+router.post(
+	"/register",
+	asyncHandler(async (req, res) => {
 		const { user, token } = await register({
 			login: req.body.login,
 			password: req.body.password,
@@ -25,21 +29,12 @@ router.post("/register", async (req, res) => {
 			error: null,
 			user: mapUser(user),
 		});
-	} catch (e) {
-		if (e.code === 11000) {
-			res.send({
-				error: "This user already exists",
-			});
-		} else {
-			res.send({
-				error: e.message,
-			});
-		}
-	}
-});
+	}),
+);
 
-router.post("/login", async (req, res) => {
-	try {
+router.post(
+	"/login",
+	asyncHandler(async (req, res) => {
 		const { user, token } = await login(req.body.login, req.body.password);
 
 		res.cookie("token", token, {
@@ -51,36 +46,29 @@ router.post("/login", async (req, res) => {
 			error: null,
 			user: mapUser(user),
 		});
-	} catch (e) {
-		if (e.code === 11000) {
-			res.send({
-				error: "This user already exists",
-			});
-		} else {
-			res.send({
-				error: e.message,
-			});
-		}
-	}
-});
+	}),
+);
 
-router.post("/logout", (req, res) => {
-	res.cookie("token", "", {
-		httpOnly: true,
-		secure: process.env.NODE_ENV === "production",
-		sameSite: "lax",
-		maxAge: 0,
-	}).send({});
-});
+router.post(
+	"/logout",
+	asyncHandler(async (req, res) => {
+		res.cookie("token", "", {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
+			sameSite: "lax",
+			maxAge: 0,
+		}).send({});
+	}),
+);
 
-router.get("/me", authenticated, (req, res) => {
-	try {
+// ==================== GET ====================
+
+router.get(
+	"/me",
+	authenticated,
+	asyncHandler(async (req, res) => {
 		res.send({ user: mapUser(req.user) });
-	} catch (e) {
-		res.send({user: null,
-			error: e.message
-		})
-	}
-});
+	}),
+);
 
 module.exports = router;

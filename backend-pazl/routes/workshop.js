@@ -2,14 +2,23 @@ const express = require("express");
 const authenticated = require("../middlewares/authenticated");
 const { getUserPosts } = require("../controllers/post");
 const mapPost = require("../helpers/mapPost");
+const asyncHandler = require("../middlewares/asyncHandler"); 
 
 const router = express.Router({ mergeParams: true });
 
 router.use(authenticated);
 
-router.get("/publicationsUser", async (req, res) => {
-	try {
-		const { limit = 10, offset = 0, search, isPublished } = req.query;
+router.get(
+	"/publicationsUser",
+	asyncHandler(async (req, res) => {
+		const {
+			limit = 10,
+			offset = 0,
+			search,
+			isPublished,
+			sortBy,
+			order,
+		} = req.query;
 		const includeIsPublishedFlag = isPublished === "true";
 
 		const postsListData = await getUserPosts({
@@ -18,6 +27,8 @@ router.get("/publicationsUser", async (req, res) => {
 			search,
 			isPublished: includeIsPublishedFlag,
 			author: req.user.id,
+			sortBy,
+			order,
 		});
 
 		res.send({
@@ -30,9 +41,7 @@ router.get("/publicationsUser", async (req, res) => {
 			},
 			error: null,
 		});
-	} catch (e) {
-		res.send({ res: null, error: e.message });
-	}
-});
+	}),
+);
 
 module.exports = router;

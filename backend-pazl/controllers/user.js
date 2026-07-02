@@ -3,6 +3,9 @@ const User = require("../models/User");
 const ROLES = require("../constants/roles");
 const { generate } = require("../helpers/token");
 const { generateDate } = require("../helpers/dataHelpers");
+const { buildQuery } = require('../helpers/queryHelpers.js')
+const { buildSortOptions } = require('../helpers/sortHelpers');
+const { USER_SORT_FIELDS } = require('../constants/sortFields');
 
 async function register({
 	login,
@@ -57,24 +60,23 @@ async function login(login, password) {
 	return { token, user };
 }
 
-async function getUsers({ limit, offset, search, includeDeleted = false }) {
-	let query = {};
+async function getUsers({ limit, offset, search, includeDeleted = false, order, sortBy }) {
 
-	if (search) {
-		query.login = { $regex: search, $options: "i" };
-	}
+	const query = buildQuery({ search, includeDeleted });
 
-	if (!includeDeleted) {
-		query.isDeleted = {
-			$ne: true,
-		};
-	}
+
+		const sortOptions = buildSortOptions(
+			sortBy,
+			order,
+			USER_SORT_FIELDS,
+			"createdAt",
+		);
 
 	const [users, total] = await Promise.all([
 		User.find(query)
 			.skip(Number(offset))
 			.limit(Number(limit))
-			.sort({ createdAt: -1, _id: -1 }),
+			.sort(sortOptions),
 		User.countDocuments(query),
 	]);
 

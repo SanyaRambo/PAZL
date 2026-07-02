@@ -1,5 +1,6 @@
 const express = require("express");
 const authenticated = require("../middlewares/authenticated");
+const asyncHandler = require("../middlewares/asyncHandler"); 
 const {
 	toggleFollow,
 	sendFriendRequest,
@@ -19,10 +20,25 @@ const router = express.Router();
 
 router.use(authenticated);
 
-router.get("/friends", async (req, res) => {
-	try {
-		const { limit = 20, offset = 0, search = "" } = req.query;
-		const result = await getFriends(req.user.id, { limit, offset, search });
+// ==================== GET ====================
+
+router.get(
+	"/friends",
+	asyncHandler(async (req, res) => {
+		const {
+			limit = 20,
+			offset = 0,
+			search = "",
+			sortBy,
+			order,
+		} = req.query;
+		const result = await getFriends(req.user.id, {
+			limit,
+			offset,
+			search,
+			sortBy,
+			order,
+		});
 
 		res.send({
 			res: {
@@ -32,18 +48,25 @@ router.get("/friends", async (req, res) => {
 			},
 			error: null,
 		});
-	} catch (e) {
-		res.status(400).send({ res: null, error: e.message });
-	}
-});
+	}),
+);
 
-router.get("/following", async (req, res) => {
-	try {
-		const { limit = 20, offset = 0, search = "" } = req.query;
+router.get(
+	"/following",
+	asyncHandler(async (req, res) => {
+		const {
+			limit = 20,
+			offset = 0,
+			search = "",
+			sortBy,
+			order,
+		} = req.query;
 		const result = await getFollowing(req.user.id, {
 			limit,
 			offset,
 			search,
+			sortBy,
+			order,
 		});
 		res.send({
 			res: {
@@ -53,18 +76,25 @@ router.get("/following", async (req, res) => {
 			},
 			error: null,
 		});
-	} catch (e) {
-		res.status(400).send({ res: null, error: e.message });
-	}
-});
+	}),
+);
 
-router.get("/followers", async (req, res) => {
-	try {
-		const { limit = 20, offset = 0, search = "" } = req.query;
+router.get(
+	"/followers",
+	asyncHandler(async (req, res) => {
+		const {
+			limit = 20,
+			offset = 0,
+			search = "",
+			sortBy,
+			order,
+		} = req.query;
 		const result = await getFollowers(req.user.id, {
 			limit,
 			offset,
 			search,
+			sortBy,
+			order,
 		});
 		res.send({
 			res: {
@@ -74,18 +104,25 @@ router.get("/followers", async (req, res) => {
 			},
 			error: null,
 		});
-	} catch (e) {
-		res.status(400).send({ res: null, error: e.message });
-	}
-});
+	}),
+);
 
-router.get("/requests", async (req, res) => {
-	try {
-		const { limit = 20, offset = 0, search = "" } = req.query;
+router.get(
+	"/requests",
+	asyncHandler(async (req, res) => {
+		const {
+			limit = 20,
+			offset = 0,
+			search = "",
+			sortBy,
+			order,
+		} = req.query;
 		const result = await getFriendRequests(req.user.id, {
 			limit,
 			offset,
 			search,
+			sortBy,
+			order,
 		});
 		res.send({
 			res: {
@@ -95,18 +132,25 @@ router.get("/requests", async (req, res) => {
 			},
 			error: null,
 		});
-	} catch (e) {
-		res.status(400).send({ res: null, error: e.message });
-	}
-});
+	}),
+);
 
-router.get("/sent", async (req, res) => {
-	try {
-		const { limit = 20, offset = 0, search = "" } = req.query;
+router.get(
+	"/sent",
+	asyncHandler(async (req, res) => {
+		const {
+			limit = 20,
+			offset = 0,
+			search = "",
+			sortBy,
+			order,
+		} = req.query;
 		const result = await getSentRequests(req.user.id, {
 			limit,
 			offset,
 			search,
+			sortBy,
+			order,
 		});
 		res.send({
 			res: {
@@ -116,63 +160,59 @@ router.get("/sent", async (req, res) => {
 			},
 			error: null,
 		});
-	} catch (e) {
-		res.status(400).send({ res: null, error: e.message });
-	}
-});
+	}),
+);
 
-router.post("/follow/:userId", async (req, res) => {
-	try {
+// ==================== POST ====================
+
+router.post(
+	"/follow/:userId",
+	asyncHandler(async (req, res) => {
 		const result = await toggleFollow(req.user.id, req.params.userId);
 		res.send({ res: result, error: null });
-	} catch (e) {
-		res.status(400).send({ res: null, error: e.message });
-	}
-});
+	}),
+);
 
-router.post("/request/:userId", async (req, res) => {
-	try {
+router.post(
+	"/request/:userId",
+	asyncHandler(async (req, res) => {
 		await sendFriendRequest(req.user.id, req.params.userId);
 		res.send({ res: "Заявка отправлена", error: null });
-	} catch (e) {
-		res.status(400).send({ res: null, error: e.message });
-	}
-});
+	}),
+);
 
-router.post("/request/:userId/accept", async (req, res) => {
-	try {
+router.post(
+	"/request/:userId/accept",
+	asyncHandler(async (req, res) => {
 		await acceptFriendRequest(req.user.id, req.params.userId);
 		res.send({ res: "Заявка принята", error: null });
-	} catch (e) {
-		res.status(400).send({ res: null, error: e.message });
-	}
-});
+	}),
+);
 
-router.delete("/request/:userId", async (req, res) => {
-	try {
+// ==================== DELETE ====================
+
+router.delete(
+	"/request/:userId",
+	asyncHandler(async (req, res) => {
 		await rejectFriendRequest(req.user.id, req.params.userId);
 		res.send({ res: "Заявка отклонена", error: null });
-	} catch (e) {
-		res.status(400).send({ res: null, error: e.message });
-	}
-});
+	}),
+);
 
-router.delete("/request/cancel/:userId", async (req, res) => {
-	try {
+router.delete(
+	"/request/cancel/:userId",
+	asyncHandler(async (req, res) => {
 		await cancelFriendRequest(req.user.id, req.params.userId);
 		res.send({ res: "Заявка отменена", error: null });
-	} catch (e) {
-		res.status(400).send({ res: null, error: e.message });
-	}
-});
+	}),
+);
 
-router.delete("/:userId", async (req, res) => {
-	try {
+router.delete(
+	"/:userId",
+	asyncHandler(async (req, res) => {
 		await removeFriend(req.user.id, req.params.userId);
 		res.send({ res: "Друг удалён", error: null });
-	} catch (e) {
-		res.status(400).send({ res: null, error: e.message });
-	}
-});
+	}),
+);
 
 module.exports = router;

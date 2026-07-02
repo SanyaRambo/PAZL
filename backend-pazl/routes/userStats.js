@@ -1,14 +1,16 @@
 const express = require("express");
-const { generateDate } = require("../helpers/dataHelpers");
-const UserStats = require("../models/UserStats");
 const authenticated = require("../middlewares/authenticated");
+const asyncHandler = require("../middlewares/asyncHandler"); 
+const UserStats = require("../models/UserStats");
 
 const router = express.Router();
 
 router.use(authenticated);
 
-router.get("/stats", authenticated, async (req, res) => {
-	try {
+router.get(
+	"/stats",
+	authenticated,
+	asyncHandler(async (req, res) => {
 		const stats = await UserStats.findOne({ userId: req.user.id });
 		if (!stats) {
 			return res
@@ -16,10 +18,7 @@ router.get("/stats", authenticated, async (req, res) => {
 				.json({ res: null, error: "Статистика не найдена" });
 		}
 		res.json({ res: stats, error: null });
-	} catch (err) {
-		res.status(500).json({ res: null, error: err.message });
-	}
-});
-
+	}),
+);
 
 module.exports = router;

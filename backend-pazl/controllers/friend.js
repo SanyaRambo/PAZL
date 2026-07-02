@@ -1,4 +1,6 @@
 const User = require("../models/User");
+const { buildSortOptions } = require('../helpers/sortHelpers');
+const { USER_SORT_FIELDS } = require('../constants/sortFields');
 
 async function toggleFollow(currentUserId, targetUserId) {
 	const currentUser = await User.findById(currentUserId);
@@ -143,7 +145,7 @@ async function removeFriend(currentUserId, friendId) {
 	await friend.save();
 }
 
-async function getFriends(userId, { limit = 20, offset = 0, search = "" }) {
+async function getFriends(userId, { limit = 20, offset = 0, search = "", sortBy, order }) {
 	const user = await User.findById(userId);
 	if (!user) return { items: [], totalCount: 0, hasMore: false };
 
@@ -152,6 +154,8 @@ async function getFriends(userId, { limit = 20, offset = 0, search = "" }) {
 		_id: { $in: user.friends },
 		...query,
 	});
+
+	 const sortOptions = buildSortOptions(sortBy, order, USER_SORT_FIELDS, 'createdAt');
 
 	const friends = await User.find({
 		_id: { $in: user.friends },
@@ -160,7 +164,7 @@ async function getFriends(userId, { limit = 20, offset = 0, search = "" }) {
 		.select("login idRole createdAt avatar")
 		.skip(Number(offset))
 		.limit(Number(limit))
-		.sort({ createdAt: -1 });
+		.sort(sortOptions);
 
 	return {
 		items: friends,
@@ -169,7 +173,7 @@ async function getFriends(userId, { limit = 20, offset = 0, search = "" }) {
 	};
 }
 
-async function getFollowing(userId, { limit = 20, offset = 0, search = "" }) {
+async function getFollowing(userId, { limit = 20, offset = 0, search = "", order, sortBy }) {
 	const user = await User.findById(userId);
 	if (!user) return { items: [], totalCount: 0, hasMore: false };
 
@@ -178,6 +182,8 @@ async function getFollowing(userId, { limit = 20, offset = 0, search = "" }) {
 		_id: { $in: user.following },
 		...query,
 	});
+
+	 const sortOptions = buildSortOptions(sortBy, order, USER_SORT_FIELDS, 'createdAt');
 
 	const following = await User.find({
 		_id: { $in: user.following },
@@ -186,7 +192,7 @@ async function getFollowing(userId, { limit = 20, offset = 0, search = "" }) {
 		.select("login idRole createdAt avatar")
 		.skip(Number(offset))
 		.limit(Number(limit))
-		.sort({ createdAt: -1 });
+		.sort( sortOptions );
 
 	return {
 		items: following,
@@ -195,7 +201,7 @@ async function getFollowing(userId, { limit = 20, offset = 0, search = "" }) {
 	};
 }
 
-async function getFollowers(userId, { limit = 20, offset = 0, search = "" }) {
+async function getFollowers(userId, { limit = 20, offset = 0, search = "", order, sortBy }) {
 	const user = await User.findById(userId);
 	if (!user) return { items: [], totalCount: 0, hasMore: false };
 
@@ -205,6 +211,8 @@ async function getFollowers(userId, { limit = 20, offset = 0, search = "" }) {
 		...query,
 	});
 
+	 const sortOptions = buildSortOptions(sortBy, order, USER_SORT_FIELDS, 'createdAt');
+
 	const followers = await User.find({
 		_id: { $in: user.followers },
 		...query,
@@ -212,7 +220,7 @@ async function getFollowers(userId, { limit = 20, offset = 0, search = "" }) {
 		.select("login idRole createdAt avatar")
 		.skip(Number(offset))
 		.limit(Number(limit))
-		.sort({ createdAt: -1 });
+		.sort(sortOptions);
 
 	return {
 		items: followers,
@@ -223,7 +231,7 @@ async function getFollowers(userId, { limit = 20, offset = 0, search = "" }) {
 
 async function getFriendRequests(
 	userId,
-	{ limit = 20, offset = 0, search = "" },
+	{ limit = 20, offset = 0, search = "", sortBy, order},
 ) {
 	const user = await User.findById(userId);
 	if (!user) return { items: [], totalCount: 0, hasMore: false };
@@ -234,6 +242,8 @@ async function getFriendRequests(
 		...query,
 	});
 
+	 const sortOptions = buildSortOptions(sortBy, order, USER_SORT_FIELDS, 'createdAt');
+
 	const requests = await User.find({
 		_id: { $in: user.friendRequests },
 		...query,
@@ -241,7 +251,7 @@ async function getFriendRequests(
 		.select("login idRole createdAt avatar")
 		.skip(Number(offset))
 		.limit(Number(limit))
-		.sort({ createdAt: -1 });
+		.sort(sortOptions);
 
 	return {
 		items: requests,
@@ -252,10 +262,12 @@ async function getFriendRequests(
 
 async function getSentRequests(
 	userId,
-	{ limit = 20, offset = 0, search = "" },
+	{ limit = 20, offset = 0, search = "", sortBy, order },
 ) {
 	const user = await User.findById(userId);
 	if (!user) return { items: [], totalCount: 0, hasMore: false };
+
+	 const sortOptions = buildSortOptions(sortBy, order, USER_SORT_FIELDS, 'createdAt');
 
 	const query = search ? { login: { $regex: search, $options: "i" } } : {};
 	const total = await User.countDocuments({
@@ -270,7 +282,7 @@ async function getSentRequests(
 		.select("login idRole createdAt")
 		.skip(Number(offset))
 		.limit(Number(limit))
-		.sort({ createdAt: -1 });
+		.sort(sortOptions);
 
 	return {
 		items: sent,
