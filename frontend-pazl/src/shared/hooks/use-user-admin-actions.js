@@ -1,10 +1,7 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useMutation } from './use-mutation';
-import { addDeletedUserId } from '../../entities/friends-entite/actions';
 
 export const useUserAdminActions = (userId, onRoleUpdated) => {
-	const dispatch = useDispatch(); 
 	const [isRoleSaving, setIsRoleSaving] = useState(false);
 	const [isRoleSave, setIsRoleSave] = useState(false);
 	const [isUserDeleting, setIsUserDeleting] = useState(false);
@@ -24,12 +21,13 @@ export const useUserAdminActions = (userId, onRoleUpdated) => {
 			);
 			if (result.success) {
 				setIsRoleSave(true);
-				if (onRoleUpdated) onRoleUpdated(userId, selectedRole);
+				return true;
 			} else {
 				throw new Error(result.error);
 			}
 		} catch (e) {
 			console.error(e);
+			return false; // ошибка
 		} finally {
 			setIsRoleSaving(false);
 			setTimeout(() => setIsRoleSave(false), 1000);
@@ -46,9 +44,7 @@ export const useUserAdminActions = (userId, onRoleUpdated) => {
 			);
 			if (result.success) {
 				setIsUserDelete(true);
-
-				dispatch(addDeletedUserId(userId));
-
+				if (onRoleUpdated) onRoleUpdated(); // для удаления оставляем обновление
 				return true;
 			} else {
 				throw new Error(result.error);

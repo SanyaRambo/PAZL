@@ -4,14 +4,14 @@ module.exports = function (post, currentUserId) {
     const isAuthorDeleted = !post.author || post.author.isDeleted;
 
     return {
-        id: post.id,
+        id: post.id || post._id,
         title: post.title,
         author: isAuthorDeleted
             ? `Deleted user: ${post.author.login}`
             : post.author.login,
 		isAuthorDeleted: isAuthorDeleted,
 		avatarAuthor: post.author.avatar || null,
-        idAuthor: post.author.id,
+        idAuthor: post.author.id || post.author._id,
         content: post.content,
         image: post.image,
         publishedAt: formatDate(post.publishedAt),

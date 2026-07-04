@@ -1,5 +1,6 @@
 const Post = require("../models/Post");
 const Comment = require("../models/Comment");
+const mongoose = require("mongoose");
 const extractImageUrls = require("../helpers/extractImageUrls");
 const fs = require("fs").promises;
 const path = require("path");
@@ -110,13 +111,12 @@ async function getUserPosts({
 	limit,
 	offset,
 	search,
-	isPublished = true,
+	isPublished,
 	author,
 	sortBy,
 	order,
 }) {
 	const query = buildQuery({ search, isPublished, author });
-
 
 	const sortOptions = buildSortOptions(
 		sortBy,
@@ -141,23 +141,97 @@ async function getUserPosts({
 }
 
 async function getLikedPosts(userId, { limit, offset, search, sortBy, order }) {
-	let query = buildQuery({ search, userId });
+	const userIdObj = new mongoose.Types.ObjectId(userId);
 
-	const sortOptions = buildSortOptions(
-		sortBy,
-		order,
-		POST_LIKED_SORT_FIELDS,
-		"likedAt",
-	);
+	const match = {
+		likes: { $elemMatch: { userId: userIdObj } },
+		$or: [{ isPublished: true }, { author: userIdObj }],
+	};
 
-	const [posts, total] = await Promise.all([
-		Post.find(query)
-			.sort(sortOptions)
-			.skip(Number(offset))
-			.limit(Number(limit))
-			.populate("author"),
-		Post.countDocuments(query),
+	if (search) {
+		match.title = { $regex: search, $options: "i" };
+	}
+
+	// Если сортировка НЕ по likedAt – используем обычный find (он работает)
+	if (sortBy !== "likedAt") {
+		const sortOptions = buildSortOptions(
+			sortBy,
+			order,
+			POST_LIKED_SORT_FIELDS,
+			"likedAt",
+		);
+		const [posts, total] = await Promise.all([
+			Post.find(match)
+				.sort(sortOptions)
+				.skip(Number(offset))
+				.limit(Number(limit))
+				.populate("author"),
+			Post.countDocuments(match),
+		]);
+		return {
+			items: posts,
+			totalCount: total,
+			hasMore: Number(offset) + posts.length < total,
+		};
+	}
+
+	// ✅ Сортировка по likedAt – агрегация (теперь точно!)
+	const sortOrder = order === "asc" ? 1 : -1;
+
+	const pipeline = [
+		{ $match: match },
+		{
+			$addFields: {
+				userLikeDate: {
+					$let: {
+						vars: {
+							like: {
+								$arrayElemAt: [
+									{
+										$filter: {
+											input: "$likes",
+											as: "like",
+											cond: {
+												$eq: [
+													"$$like.userId",
+													userIdObj,
+												],
+											}, // ✅ сравниваем с ObjectId
+										},
+									},
+									0,
+								],
+							},
+						},
+						in: "$$like.likedAt",
+					},
+				},
+			},
+		},
+		{ $sort: { userLikeDate: sortOrder, _id: 1 } },
+		{ $skip: Number(offset) },
+		{ $limit: Number(limit) },
+		{
+			$lookup: {
+				from: "users",
+				localField: "author",
+				foreignField: "_id",
+				as: "author",
+			},
+		},
+		{ $unwind: { path: "$author", preserveNullAndEmptyArrays: true } },
+	];
+
+	// Подсчёт общего количества
+	const countPipeline = [{ $match: match }, { $count: "total" }];
+
+	const [posts, countResult] = await Promise.all([
+		Post.aggregate(pipeline),
+		Post.aggregate(countPipeline),
 	]);
+
+	const total = countResult[0]?.total || 0;
+
 	return {
 		items: posts,
 		totalCount: total,

@@ -3,7 +3,7 @@ const User = require("../models/User");
 const ROLES = require("../constants/roles");
 const { generate } = require("../helpers/token");
 const { generateDate } = require("../helpers/dataHelpers");
-const { buildQuery } = require('../helpers/queryHelpers.js')
+const { buildUserQuery } = require('../helpers/queryHelpers.js')
 const { buildSortOptions } = require('../helpers/sortHelpers');
 const { USER_SORT_FIELDS } = require('../constants/sortFields');
 
@@ -62,7 +62,7 @@ async function login(login, password) {
 
 async function getUsers({ limit, offset, search, includeDeleted = false, order, sortBy }) {
 
-	const query = buildQuery({ search, includeDeleted });
+	const query = buildUserQuery({ search, includeDeleted });
 
 
 		const sortOptions = buildSortOptions(

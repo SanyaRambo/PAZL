@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux'; // ✅ добавить
-import { selectDeletedUserIds } from '../../../../../entities/friends-entite/selectors'; // ✅ добавить
+import { useSelector } from 'react-redux';
+import { selectDeletedUserIds } from '../../../../../entities/friends-entite/selectors';
 import { UsersListLayout } from './UsersListLayout';
 import { useFriendActions } from '../../../../../shared/hooks';
 import { useUserAdminActions } from '../../../../../shared/hooks';
@@ -21,25 +21,32 @@ export const UserItem = ({
 }) => {
 	const friendActions = useFriendActions(user.id);
 	const adminActions = useUserAdminActions(user.id, onRoleUpdated);
-	const deletedUserIds = useSelector(selectDeletedUserIds); // ✅ получаем список удалённых
+	const deletedUserIds = useSelector(selectDeletedUserIds);
 
 	const [selectedRole, setSelectedRole] = useState(user.idRole);
-	const [initialRoleId] = useState(user.idRole);
+	const [initialRoleId, setInitialRoleId] = useState(user.idRole);
 	const isSelectDisabledRole = selectedRole !== initialRoleId;
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-	const handleRoleSave = () => adminActions.onRoleSave(selectedRole);
+	const handleRoleSave = async () => {
+		const success = await adminActions.onRoleSave(selectedRole);
+		if (success) {
+			setInitialRoleId(selectedRole);
+		} else {
+
+			setSelectedRole(initialRoleId);
+		}
+	};
 
 	const handleDeleteUser = () => {
 		setShowDeleteModal(true);
 	};
 
 	const confirmDelete = async () => {
-		await adminActions.onDeleteUser(); // внутри диспатчит addDeletedUserId
+		await adminActions.onDeleteUser();
 		setShowDeleteModal(false);
 	};
 
-	// ✅ Проверяем: удалён ли пользователь из глобального списка или пришёл с isDeleted: true
 	const isUserDeleted = user.isDeleted || deletedUserIds.includes(user.id);
 
 	if (isUserDeleted) {
@@ -69,7 +76,7 @@ export const UserItem = ({
 				hasIncomingRequest={hasIncomingRequest}
 				hasOutgoingRequest={hasOutgoingRequest}
 				roles={roles}
-				isDeleted={false} // обработали выше, всегда false
+				isDeleted={false}
 				follow={friendActions.follow}
 				unfollow={friendActions.unfollow}
 				sendRequest={friendActions.sendRequest}

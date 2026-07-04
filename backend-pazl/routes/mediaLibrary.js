@@ -12,23 +12,22 @@ router.use(authenticated);
 // ==================== GET ====================
 
 router.get(
-	"/publicationsUser",
+	"/publicationsUser/:userId",
 	asyncHandler(async (req, res) => {
 		const {
-			limit = 10,
+			limit = 1000,
 			offset = 0,
 			search,
 			isPublished,
 			sortBy,
 			order,
 		} = req.query;
-		const includeIsPublishedFlag = isPublished === "true";
 
 		const postsListData = await getUserPosts({
 			limit,
 			offset,
 			search,
-			isPublished: includeIsPublishedFlag,
+			isPublished,
 			author: req.user.id,
 			sortBy,
 			order,
@@ -50,7 +49,7 @@ router.get(
 router.get(
 	"/publicationsLiked",
 	asyncHandler(async (req, res) => {
-		const { limit = 10, offset = 0, search, sortBy, order } = req.query;
+		const { limit = 1000, offset = 0, search, sortBy, order } = req.query;
 		const userId = req.user.id;
 
 		const postsListData = await getLikedPosts(userId, {

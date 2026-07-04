@@ -8,16 +8,33 @@ import styles from '../usersList.module.css';
 import { OctagonX } from 'lucide-react';
 
 export const SubscribesList = memo(() => {
-	const { filteredRoles, friends, following, inputValue } = useOutletContext();
+	const { filteredRoles, friends, following, inputValue, sortOption } =
+		useOutletContext();
 	const currentUserId = useSelector(selectUserId);
 	const currentUserIdRole = useSelector(selectUserRole);
 
-	const filteredFollowing = useMemo(() => {
-		const search = inputValue.toLowerCase();
-		return following.filter((user) => user.login.toLowerCase().includes(search));
-	}, [following, inputValue]);
+	const sortedFollowing = useMemo(() => {
+		if (!following || following.length === 0) return [];
 
-	if (filteredFollowing.length === 0) {
+		const [sortBy, order] = sortOption.split('_');
+		const sorted = [...following].filter((user) =>
+			user.login.toLowerCase().includes(inputValue.toLowerCase()),
+		);
+
+		return sorted.sort((a, b) => {
+			let valA = a[sortBy] || '';
+			let valB = b[sortBy] || '';
+			if (sortBy === 'createdAt' || sortBy === 'registeredAt') {
+				valA = new Date(a.registeredAt || a.createdAt || 0);
+				valB = new Date(b.registeredAt || b.createdAt || 0);
+			}
+			if (valA < valB) return order === 'asc' ? -1 : 1;
+			if (valA > valB) return order === 'asc' ? 1 : -1;
+			return 0;
+		});
+	}, [following, sortOption, inputValue]);
+
+	if (sortedFollowing.length === 0) {
 		return (
 			<div
 				className={styles.empty}
@@ -25,27 +42,12 @@ export const SubscribesList = memo(() => {
 			>
 				{inputValue ? (
 					<>
-						<div
-							style={{
-								fontSize: '30px',
-							}}
-						>
-							Таких подписок не найдено
-						</div>
-						<OctagonX
-							size={60}
-							style={{
-								color: '#ec5959',
-							}}
-						/>
+						<div style={{ fontSize: '30px' }}>Таких подписок не найдено</div>
+						<OctagonX size={60} style={{ color: '#ec5959' }} />
 					</>
 				) : (
-					<div
-					style={{
-							fontSize: '30px',
-						}}
-					>
-					У вас нет подписок. Подпишитесь на кого-нибудь!
+					<div style={{ fontSize: '30px' }}>
+						У вас нет подписок. Подпишитесь на кого-нибудь!
 					</div>
 				)}
 			</div>
@@ -54,7 +56,7 @@ export const SubscribesList = memo(() => {
 
 	return (
 		<div className={styles.listContainer}>
-			{filteredFollowing.map((user) => {
+			{sortedFollowing.map((user) => {
 				const isFriend = friends.some((f) => f.id === user.id);
 				return (
 					<UserItem

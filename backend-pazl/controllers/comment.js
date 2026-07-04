@@ -91,7 +91,7 @@ async function deleteCommentWithChildren(commentId, currentUser) {
 	await Comment.findByIdAndDelete(commentId);
 }
 
-async function getComments(idPost, sortBy = "publishedAt", order = "desc") {
+async function getComments(idPost, sortBy = "publishedAt", order = "asc") {
 	const comments = await Comment.find({ idPublication: idPost })
 		.populate("author")
 		.lean();
@@ -109,11 +109,13 @@ async function getComments(idPost, sortBy = "publishedAt", order = "desc") {
 	const sortField = Object.keys(sortOptions)[0];
 	const sortOrder = sortOptions[sortField] === 1 ? 1 : -1;
 
+
 	parents.sort((a, b) => {
 		if (a[sortField] < b[sortField]) return -sortOrder;
 		if (a[sortField] > b[sortField]) return sortOrder;
 		return 0;
 	});
+
 
 	children.sort((a, b) => a.publishedAt - b.publishedAt);
 

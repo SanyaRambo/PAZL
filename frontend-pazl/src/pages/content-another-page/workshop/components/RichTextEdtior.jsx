@@ -15,7 +15,7 @@ import {
 	deletePostAsync,
 } from '../../../../entities/editor-entite/actions';
 import { togglePublishPost } from '../../../../entities/editor-entite/actions/toggle-published-post';
-import { useCallback, useEffect, useState } from 'react'; 
+import { useCallback, useEffect, useState } from 'react';
 import styles from './richTextEditor.module.css';
 import { useNavigate } from 'react-router-dom';
 import { tiptapExtensions } from '../../../../shared/config/tiptapExtensions/tiptapExtensions';
@@ -165,7 +165,7 @@ export const RichTextEditor = () => {
 					onChange={(e) =>
 						dispatch(updateEditingPost({ title: e.target.value }))
 					}
-					placeholder="Заголовок (макс 60 символов)"
+					placeholder="Заголовок (макс 120 символов)"
 				/>
 
 				<div className={styles.imageUploadArea}>

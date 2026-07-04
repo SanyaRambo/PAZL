@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Heart, Library, User } from 'lucide-react';
@@ -14,7 +14,7 @@ import {
 	selectLikedPostsLoading,
 	selectLikedPostsLoaded,
 } from '../../../entities/liked-posts-entite/selectors';
-import { selectUserId, selectUserLogin } from '../../../entities/user-entite/selectors';
+import { selectUserId } from '../../../entities/user-entite/selectors';
 import { LoaderPost } from '../../../widgets/server-status';
 import { SortControls } from '../../../shared/ui-kit/sort-controls';
 import { setPostLike } from '../../../entities/likes-entite/actions';
@@ -25,7 +25,6 @@ export const MediaLibrary = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const userId = useSelector(selectUserId);
-	const userLogin = useSelector(selectUserLogin);
 	const myPosts = useSelector(selectPublicationsUser);
 	const myPostsLoading = useSelector(selectPublicationsLoading);
 	const likedPosts = useSelector(selectLikedPosts);
@@ -34,76 +33,46 @@ export const MediaLibrary = () => {
 	const publicationsLoaded = useSelector(selectPublicationsLoaded);
 	const [activeTab, setActiveTab] = useState('my');
 
-		const [sortOption, setSortOption] = useState('createdAt_desc');
+	const [sortOption, setSortOption] = useState(
+		activeTab === 'my' ? 'createdAt_desc' : 'likedAt_desc',
+	);
 
 	const initializedIds = useRef(new Set());
 
-
-	const mySortOptions = [
-		{ value: 'createdAt_desc', label: 'Сначала новые (созданные)' },
-		{ value: 'createdAt_asc', label: 'Сначала старые (созданные)' },
-		{ value: 'publishedAt_desc', label: 'Сначала новые (опубликованные)' },
-		{ value: 'publishedAt_asc', label: 'Сначала старые (опубликованные)' },
-		{ value: 'views_desc', label: 'По просмотрам (сначала популярные)' },
-	];
-
-
-	const likedSortOptions = [
-		{ value: 'likedAt_desc', label: 'Сначала новые (по дате лайка)' },
-		{ value: 'likedAt_asc', label: 'Сначала старые (по дате лайка)' },
-		{ value: 'publishedAt_desc', label: 'Сначала новые (опубликованные)' },
-		{ value: 'publishedAt_asc', label: 'Сначала старые (опубликованные)' },
-		{ value: 'views_desc', label: 'По просмотрам (сначала популярные)' },
-	];
+	const loadPosts = () => {
+		const [sortBy, order] = sortOption.split('_');
+		if (activeTab === 'my') {
+			dispatch(loadPublicationsUserAsync({ sortBy, order, userId }));
+		} else {
+			dispatch(loadLikedPostsAsync({ sortBy, order }));
+		}
+	};
 
 	useEffect(() => {
 		if (userId && !publicationsLoaded && !myPostsLoading) {
-			const [sortBy, order] = sortOption.split('_');
-			dispatch(loadPublicationsUserAsync({ sortBy, order }));
+			loadPosts();
 		}
-	}, [userId, publicationsLoaded, myPostsLoading, dispatch, sortOption]);
+	}, [userId, publicationsLoaded, myPostsLoading]);
 
 	useEffect(() => {
 		if (userId && !likedPostsLoaded && !likedPostsLoading) {
-			const [sortBy, order] = sortOption.split('_');
-			dispatch(loadLikedPostsAsync({ sortBy, order }));
+			loadPosts();
 		}
-	}, [userId, likedPostsLoaded, likedPostsLoading, dispatch, sortOption]);
-
+	}, [userId, likedPostsLoaded, likedPostsLoading]);
 
 	useEffect(() => {
-		if (userId && publicationsLoaded) {
-			const [sortBy, order] = sortOption.split('_');
-			dispatch(loadPublicationsUserAsync({ sortBy, order }));
+		if (userId) {
+			loadPosts();
 		}
-	}, [sortOption, userId, publicationsLoaded, dispatch]);
-
-	useEffect(() => {
-		if (userId && likedPostsLoaded) {
-			const [sortBy, order] = sortOption.split('_');
-			dispatch(loadLikedPostsAsync({ sortBy, order }));
-		}
-	}, [sortOption, userId, likedPostsLoaded, dispatch]);
+	}, [sortOption, activeTab, userId]);
 
 	useEffect(() => {
 		initializedIds.current.clear();
 	}, [userId]);
 
-	const filteredPosts = useMemo(() => {
-		if (activeTab === 'my') {
-			return myPosts.filter((post) => post.author === userLogin);
-		} else {
-			return likedPosts.filter(
-				(post) =>
-					post.isPublished || (!post.isPublished && post.author === userLogin),
-			);
-		}
-	}, [activeTab, myPosts, likedPosts, userLogin]);
-
 	useEffect(() => {
-		const newPosts = filteredPosts.filter(
-			(post) => !initializedIds.current.has(post.id),
-		);
+		const posts = activeTab === 'my' ? myPosts : likedPosts;
+		const newPosts = posts.filter((post) => !initializedIds.current.has(post.id));
 		if (newPosts.length > 0) {
 			newPosts.forEach((post) => {
 				dispatch(
@@ -117,13 +86,38 @@ export const MediaLibrary = () => {
 				initializedIds.current.add(post.id);
 			});
 		}
-	}, [filteredPosts, dispatch]);
+	}, [activeTab, myPosts, likedPosts, dispatch]);
 
 	const loading = activeTab === 'my' ? myPostsLoading : likedPostsLoading;
+	const displayedPosts = activeTab === 'my' ? myPosts : likedPosts;
 
+	const mySortOptions = [
+		{ value: 'createdAt_desc', label: 'Сначала новые (созданные)' },
+		{ value: 'createdAt_asc', label: 'Сначала старые (созданные)' },
+		{ value: 'publishedAt_desc', label: 'Сначала новые (опубликованные)' },
+		{ value: 'publishedAt_asc', label: 'Сначала старые (опубликованные)' },
+		{ value: 'views_desc', label: 'По просмотрам (сначала популярные)' },
+	];
+
+	const likedSortOptions = [
+		{ value: 'likedAt_desc', label: 'Сначала новые (по дате лайка)' },
+		{ value: 'likedAt_asc', label: 'Сначала старые (по дате лайка)' },
+		{ value: 'publishedAt_desc', label: 'Сначала новые (опубликованные)' },
+		{ value: 'publishedAt_asc', label: 'Сначала старые (опубликованные)' },
+		{ value: 'views_desc', label: 'По просмотрам (сначала популярные)' },
+	];
 
 	const handleSortChange = (value) => {
 		setSortOption(value);
+	};
+
+	const handleTabChange = (tab) => {
+		setActiveTab(tab);
+		if (tab === 'my') {
+			setSortOption('createdAt_desc');
+		} else {
+			setSortOption('likedAt_desc');
+		}
 	};
 
 	const currentSortOptions = activeTab === 'my' ? mySortOptions : likedSortOptions;
@@ -138,26 +132,25 @@ export const MediaLibrary = () => {
 				<div className={styles.tabs}>
 					<button
 						className={`${styles.tab} ${activeTab === 'my' ? styles.active : ''}`}
-						onClick={() => setActiveTab('my')}
+						onClick={() => handleTabChange('my')}
 					>
 						<User size={18} />
 						Мои посты
 					</button>
 					<button
 						className={`${styles.tab} ${activeTab === 'liked' ? styles.active : ''}`}
-						onClick={() => setActiveTab('liked')}
+						onClick={() => handleTabChange('liked')}
 					>
 						<Heart size={18} />
 						Понравившиеся
 					</button>
 				</div>
 				<div className={styles.counter}>
-					{filteredPosts.length}{' '}
-					{filteredPosts.length === 1 ? 'пост' : 'постов'}
+					{displayedPosts.length}{' '}
+					{displayedPosts.length === 1 ? 'пост' : 'постов'}
 				</div>
 			</div>
 
-			
 			<SortControls
 				options={currentSortOptions}
 				value={sortOption}
@@ -166,13 +159,13 @@ export const MediaLibrary = () => {
 			/>
 
 			<div className={styles.grid}>
-				{filteredPosts.map((post) => (
+				{displayedPosts.map((post) => (
 					<PostCard key={post.id} post={post} />
 				))}
 				{loading && <LoaderPost />}
 			</div>
 
-			{filteredPosts.length === 0 && !loading && (
+			{displayedPosts.length === 0 && !loading && (
 				<div className={styles.empty}>
 					<FileText size={48} strokeWidth={1.5} />
 					<p>

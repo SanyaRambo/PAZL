@@ -1,0 +1,27 @@
+.inputGroup {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-width: 0;
+}
+
+.counterWrapper {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 4px;
+	font-size: 0.8rem;
+}
+
+.counter {
+	color: var(--text-secondary);
+	transition: color 0.2s;
+}
+
+.counter.overLimitText {
+	color: #fa5252 !important;
+}
+
+.overLimit {
+	border-color: #fa5252 !important;
+	box-shadow: 0 0 0 2px rgba(250, 82, 82, 0.2);
+}

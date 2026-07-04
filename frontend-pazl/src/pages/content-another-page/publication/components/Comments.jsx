@@ -1,97 +1,45 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { setCommentLike } from '../../../../entities/likes-entite/actions';
-import { useRequestServer, useMutation } from '../../../../shared/hooks';
-import { Error, Loader } from '../../../../widgets/server-status';
 import { selectUserId } from '../../../../entities/user-entite/selectors';
 import { selectUserRole } from '../../../../entities/user-entite/selectors';
-import { CommentsTree } from './components/CommentsTree';
 import { ROLE } from '../../../../shared/constants';
-import { useState, memo, useEffect } from 'react';
-import { FormSendMessage } from '../../../../widgets/content/form/FormSendMessage';
+import { useState, memo, useEffect, useRef } from 'react';
 import { CommentsLayout } from './CommentsLayout';
+import {
+	loadComments,
+	addCommentThunk,
+	deleteCommentThunk,
+	updateCommentThunk,
+} from '../../../../entities/comments-entite';
+import {
+	selectComments,
+	selectCommentsLoading,
+	selectCommentsError,
+} from '../../../../entities/comments-entite';
+import { setCommentLike } from '../../../../entities/likes-entite/actions';
+import { ConfirmModal } from '../../../../widgets/modal-window/confirm-modal';
 
 export const Comments = memo(({ idPublication, idAuthor }) => {
+	const dispatch = useDispatch();
 	const [comment, setComment] = useState('');
 	const [isSending, setIsSending] = useState(false);
-
-	const dispatch = useDispatch();
-
-	const succesRoles = [ROLE.ADMIN, ROLE.MODERATOR];
+	const [warningModal, setWarningModal] = useState({ open: false, message: '' });
 
 	const currentUserId = useSelector(selectUserId);
 	const currentUserIdRole = useSelector(selectUserRole);
+	const comments = useSelector((state) => selectComments(state, idPublication));
+	const loading = useSelector(selectCommentsLoading);
+	const error = useSelector(selectCommentsError);
+	const MAX_COMMENT_LENGTH = 2000;
 
-	const {
-		data: comments,
-		error: commentsError,
-		loading,
-		refetch,
-	} = useRequestServer(`/api/publications/${idPublication}/comments`, 'GET');
-
-	const { mutate: sendCommentOnServe } = useMutation();
-	const { mutate: deleteCommentOnServe } = useMutation();
-	const { mutate: saveCommentOnServe } = useMutation();
-
-	const handleSubmitComment = async (event, text, idParent) => {
-		event.preventDefault();
-
-		if (!text.trim() || isSending) return;
-
-		setIsSending(true);
-
-		const result = await sendCommentOnServe(
-			`/api/publications/${idPublication}/comments`,
-			'POST',
-			{ text, idParent },
-		);
-
-		setIsSending(false);
-
-		if (result.success) {
-			setComment('');
-			refetch();
-		} else {
-			console.log(`Ошибка: ${result.error}`);
-			alert(result.error);
-		}
-	};
-
-	const handleInputChange = ({ target }) => {
-		setComment(target.value);
-	};
-
-	const onDeleteComment = async (idComment) => {
-		const result = await deleteCommentOnServe(
-			`/api/publications/${idPublication}/comments/${idComment}`,
-			'DELETE',
-		);
-
-		if (result.success) {
-			await refetch();
-			console.log('Комментарий успешно удалён');
-		} else {
-			console.log(`Ошибка: ${result.error}`);
-		}
-	};
-
-	const handleSubmitSaveComment = async (idComment, commentEdit, event) => {
-		event.preventDefault();
-		const result = await saveCommentOnServe(
-			`/api/publications/${idPublication}/comments/${idComment}`,
-			'PATCH',
-			{ commentEdit },
-		);
-
-		if (result.success) {
-			await refetch();
-			console.log('Комментарий успешно сохранён');
-		} else {
-			console.log(`Ошибка: ${result.error}`);
-		}
-	};
+	const succesRoles = [ROLE.ADMIN, ROLE.MODERATOR];
+	const initializedRef = useRef(false);
 
 	useEffect(() => {
-		if (Array.isArray(comments) && comments.length > 0) {
+		dispatch(loadComments(idPublication, 'publishedAt', 'asc'));
+	}, [dispatch, idPublication]);
+
+	useEffect(() => {
+		if (!initializedRef.current && Array.isArray(comments) && comments.length > 0) {
 			comments.forEach((comment) => {
 				dispatch(
 					setCommentLike(comment.id, {
@@ -102,27 +50,69 @@ export const Comments = memo(({ idPublication, idAuthor }) => {
 					}),
 				);
 			});
+			initializedRef.current = true;
 		}
 	}, [comments, dispatch]);
 
-	
+	const showWarning = (message) => {
+		setWarningModal({ open: true, message });
+	};
+
+	const handleSubmitComment = async (event, text, idParent) => {
+		event.preventDefault();
+		if (!text.trim() || isSending) return;
+		if (text.length > MAX_COMMENT_LENGTH) {
+			showWarning(`Комментарий не может превышать ${MAX_COMMENT_LENGTH} символов.`);
+			return;
+		}
+		setIsSending(true);
+		await dispatch(addCommentThunk(idPublication, text, idParent));
+		setComment('');
+		setIsSending(false);
+	};
+
+	const handleInputChange = ({ target }) => {
+		setComment(target.value);
+	};
+
+	const onDeleteComment = async (idComment) => {
+		await dispatch(deleteCommentThunk(idPublication, idComment));
+	};
+
+	const handleSubmitSaveComment = async (idComment, commentEdit, event) => {
+		event.preventDefault();
+		await dispatch(updateCommentThunk(idPublication, idComment, commentEdit));
+	};
 
 	return (
-		<CommentsLayout
-			idPublication={idPublication}
-			idAuthor={idAuthor}
-			loading={loading}
-			isSending={isSending}
-			comment={comment}
-			handleInputChange={handleInputChange}
-			handleSubmitComment={handleSubmitComment}
-			commentsError={commentsError}
-			comments={comments}
-			succesRoles={succesRoles}
-			currentUserId={currentUserId}
-			onDeleteComment={onDeleteComment}
-			currentUserIdRole={currentUserIdRole}
-			handleSubmitSaveComment={handleSubmitSaveComment}
-		/>
+		<>
+			<CommentsLayout
+				idPublication={idPublication}
+				idAuthor={idAuthor}
+				loading={loading}
+				isSending={isSending}
+				comment={comment}
+				handleInputChange={handleInputChange}
+				handleSubmitComment={handleSubmitComment}
+				commentsError={error}
+				comments={comments}
+				succesRoles={succesRoles}
+				currentUserId={currentUserId}
+				onDeleteComment={onDeleteComment}
+				currentUserIdRole={currentUserIdRole}
+				handleSubmitSaveComment={handleSubmitSaveComment}
+			/>
+			<ConfirmModal
+				isOpen={warningModal.open}
+				onClose={() => setWarningModal({ open: false, message: '' })}
+				onConfirm={() => setWarningModal({ open: false, message: '' })}
+				title="Предупреждение"
+				message={warningModal.message}
+				confirmText="ОК"
+				cancelText={null}
+				variant="warning"
+				singleButton={true}
+			/>
+		</>
 	);
 });

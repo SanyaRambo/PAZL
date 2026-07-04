@@ -7,11 +7,13 @@ export const loadPublicationsUserAsync =
 	async (dispatch) => {
 		dispatch(setPublicationsLoading(true));
 		try {
-			const { sortBy = 'createdAt', order = 'desc' } = params;
-			const result = await request(
-				`/api/media-library/publicationsUser?sortBy=${sortBy}&order=${order}`,
-				'GET',
-			);
+			const { sortBy = 'createdAt', order = 'desc', userId, isPublished } = params;
+			// ✅ Строим URL с параметрами
+			let url = `/api/media-library/publicationsUser/${userId}?sortBy=${sortBy}&order=${order}&limit=1000`;
+			if (isPublished !== undefined) {
+				url += `&isPublished=${isPublished}`;
+			}
+			const result = await request(url, 'GET');
 			if (result.res) {
 				dispatch(setPublicationsUser(result.res.items));
 			} else {
@@ -23,4 +25,3 @@ export const loadPublicationsUserAsync =
 			dispatch(setPublicationsLoading(false));
 		}
 	};
-	

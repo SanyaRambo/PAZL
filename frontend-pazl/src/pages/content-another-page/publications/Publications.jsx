@@ -32,18 +32,10 @@ export const Publications = memo(({ inputValue }) => {
 	useEffect(() => {
 		const [sortBy, order] = sortOption.split('_');
 		refetch({ isPublished: true, sortBy, order });
-	}, []);
-
-	useEffect(() => {
-		const [sortBy, order] = sortOption.split('_');
-		refetch({ isPublished: true, sortBy, order });
-	}, [inputValue]);
-
+	}, [refetch, sortOption, inputValue]);
 
 	const handleSortChange = (sortValue) => {
 		setSortOption(sortValue);
-		const [sortBy, order] = sortValue.split('_');
-		refetch({ isPublished: true, sortBy, order });
 	};
 
 
@@ -62,6 +54,7 @@ export const Publications = memo(({ inputValue }) => {
 		}
 	}, [publicationsOfUsers, dispatch]);
 
+	// Восстановление скролла
 	useEffect(() => {
 		if (
 			!publicationsLoading &&
@@ -73,7 +66,6 @@ export const Publications = memo(({ inputValue }) => {
 			});
 		}
 	}, [publicationsLoading, publicationsOfUsers.length, savedScrollPosition]);
-
 
 	const handleIntersect = useCallback(() => {
 		if (hasMore && !publicationsLoading) {

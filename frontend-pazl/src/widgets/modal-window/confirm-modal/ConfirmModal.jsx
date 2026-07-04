@@ -9,12 +9,13 @@ export const ConfirmModal = ({
 	message = 'Вы уверены, что хотите выполнить это действие?',
 	confirmText = 'Да, удалить',
 	cancelText = 'Отмена',
-	variant = 'danger', 
+	variant = 'danger',
+	singleButton = false,
 }) => {
 	if (!isOpen) return null;
 
 	const handleConfirm = () => {
-		onConfirm();
+		if (onConfirm) onConfirm();
 		onClose();
 	};
 
@@ -36,9 +37,11 @@ export const ConfirmModal = ({
 				<p className={styles.message}>{message}</p>
 
 				<div className={styles.buttons}>
-					<button className={styles.cancelBtn} onClick={onClose}>
-						{cancelText}
-					</button>
+					{!singleButton && cancelText && (
+						<button className={styles.cancelBtn} onClick={onClose}>
+							{cancelText}
+						</button>
+					)}
 					<button
 						className={`${styles.confirmBtn} ${variant === 'danger' ? styles.danger : variant === 'warning' ? styles.warning : styles.info}`}
 						onClick={handleConfirm}

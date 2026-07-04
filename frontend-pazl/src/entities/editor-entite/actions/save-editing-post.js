@@ -9,8 +9,8 @@ export const saveEditingPost = () => async (dispatch, getState) => {
 
 	if (!post || !isDirty) return;
 
-	if (post.title.length > 60 || post.title.length < 5) {
-    toast.error('Заголовок не может превышать 60 символов и быть меньше 5 символов.');
+	if (post.title.length > 120 || post.title.length < 5) {
+    toast.error('Заголовок не может превышать 120 символов и быть меньше 5 символов.');
     return;
   }
 

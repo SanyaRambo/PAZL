@@ -14,16 +14,14 @@ export const usePaginatedData = (
 	const [offset, setOffset] = useState(0);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
-	const [extraParams, setExtraParams] = useState({});
 
 	const isLoadingRef = useRef(false);
 	const offsetRef = useRef(offset);
-
+	const paramsRef = useRef({}); // ← вместо state используем ref
 
 	useEffect(() => {
 		offsetRef.current = offset;
 	}, [offset]);
-
 
 	useEffect(() => {
 		setData([]);
@@ -32,7 +30,6 @@ export const usePaginatedData = (
 		offsetRef.current = 0;
 		setError(null);
 	}, [inputValue, currentUserSession]);
-
 
 	const loadData = useCallback(
 		async (reset = false, overrideParams = {}) => {
@@ -49,21 +46,23 @@ export const usePaginatedData = (
 				currentOffset = offsetRef.current;
 			}
 
-
+			// Объединяем параметры: из ref + переданные
 			const allParams = {
 				limit,
 				offset: currentOffset,
 				search: inputValue || '',
-				...extraParams,
+				...paramsRef.current,
 				...overrideParams,
 			};
+
+			// Сохраняем параметры в ref для следующих загрузок
+			paramsRef.current = { ...paramsRef.current, ...overrideParams };
 
 			try {
 				isLoadingRef.current = true;
 				setLoading(true);
 				setError(null);
 
-				
 				const urlParams = new URLSearchParams();
 				Object.entries(allParams).forEach(([key, value]) => {
 					if (value !== undefined && value !== null && value !== '') {
@@ -76,7 +75,7 @@ export const usePaginatedData = (
 					? `${baseURL}&${urlParams.toString()}`
 					: `${baseURL}?${urlParams.toString()}`;
 
-				console.log('📡 Запрос:', url); // для отладки
+				console.log('📡 Запрос:', url);
 
 				const result = await request(url, 'GET', null, currentUserSession);
 
@@ -105,22 +104,19 @@ export const usePaginatedData = (
 				isLoadingRef.current = false;
 			}
 		},
-		[baseURL, limit, inputValue, currentUserSession, extraParams],
+		[baseURL, limit, inputValue, currentUserSession], // ← без extraParams
 	);
 
-	// ✅ loadMore – подгружаем следующую порцию
 	const loadMore = useCallback(() => {
 		if (hasMore && !isLoadingRef.current && !loading) {
 			loadData(false);
 		}
 	}, [hasMore, loading, loadData]);
 
-	// ✅ refetch – перезагружаем с начала, можно передать новые параметры
+	// ✅ refetch теперь СТАБИЛЕН (зависит только от loadData)
 	const refetch = useCallback(
 		(newParams = {}) => {
-			// Сохраняем новые параметры в состояние
-			setExtraParams((prev) => ({ ...prev, ...newParams }));
-			// Перезагружаем с новыми параметрами
+			paramsRef.current = { ...paramsRef.current, ...newParams };
 			loadData(true, newParams);
 		},
 		[loadData],
@@ -133,6 +129,5 @@ export const usePaginatedData = (
 		hasMore,
 		loadMore,
 		refetch,
-		setExtraParams, // для гибкости
 	};
 };

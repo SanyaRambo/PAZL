@@ -8,10 +8,8 @@ export const loadLikedPostsAsync =
 		dispatch(setLikedPostsLoading(true));
 		try {
 			const { sortBy = 'likedAt', order = 'desc' } = params;
-			const result = await request(
-				`/api/media-library/publicationsLiked?sortBy=${sortBy}&order=${order}`,
-				'GET',
-			);
+			const url = `/api/media-library/publicationsLiked?sortBy=${sortBy}&order=${order}&limit=1000`;
+			const result = await request(url, 'GET');
 			if (result.res) {
 				dispatch(setLikedPosts(result.res.items));
 			} else {

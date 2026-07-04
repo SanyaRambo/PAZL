@@ -1,5 +1,5 @@
 import { useOutletContext } from 'react-router-dom';
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { usePaginatedData } from '../../../../../shared/hooks';
 import { useSelector } from 'react-redux';
 import { selectUserRole } from '../../../../../entities/user-entite/selectors';
@@ -11,10 +11,12 @@ import styles from '../usersList.module.css';
 import { OctagonX } from 'lucide-react';
 
 export const UsersList = memo(() => {
-	const { filteredRoles, inputValue, friends, following, requests, sent } =
+	const { filteredRoles, inputValue, friends, following, requests, sent, sortOption } =
 		useOutletContext();
 	const currentUserId = useSelector(selectUserId);
 	const currentUserIdRole = useSelector(selectUserRole);
+
+	const [sortBy, order] = sortOption.split('_');
 
 	const {
 		data: usersData,
@@ -23,18 +25,20 @@ export const UsersList = memo(() => {
 		hasMore,
 		loadMore,
 		refetch,
-	} = usePaginatedData('/api/friends-and-communities/users', inputValue, 20);
+	} = usePaginatedData(
+		`/api/friends-and-communities/users?includeDeleted=false&sortBy=${sortBy}&order=${order}`,
+		inputValue,
+		20,
+	);
 
 
 	useEffect(() => {
 		refetch();
-	}, [inputValue, refetch]);
-
+	}, [refetch, sortOption, inputValue]);
 
 	const handleRoleUpdated = useCallback(() => {
 		refetch();
 	}, [refetch]);
-
 
 	const loadMoreRef = useIntersectionObserver(
 		() => {
@@ -45,37 +49,35 @@ export const UsersList = memo(() => {
 		{ rootMargin: '200px 0px', threshold: 0.3 },
 	);
 
+	// Убираем дубликаты (если вдруг появились)
+	const uniqueUsers = useMemo(() => {
+		const seen = new Set();
+		return usersData.filter((user) => {
+			if (seen.has(user.id)) return false;
+			seen.add(user.id);
+			return true;
+		});
+	}, [usersData]);
+
 	if (error) {
 		return <div className={styles.error}>Ошибка загрузки пользователей</div>;
 	}
 
-	if (!loading && usersData.length === 0 && inputValue) {
+	if (!loading && uniqueUsers.length === 0 && inputValue) {
 		return (
 			<div
 				className={styles.empty}
 				style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}
 			>
-				<div
-					style={{
-						fontSize: '30px',
-					}}
-				>
-					Таких пользователей не найдено
-				</div>
-				<OctagonX
-					size={60}
-					style={{
-						color: '#ec5959',
-					}}
-				/>
+				<div style={{ fontSize: '30px' }}>Таких пользователей не найдено</div>
+				<OctagonX size={60} style={{ color: '#ec5959' }} />
 			</div>
 		);
 	}
 
 	return (
 		<div className={styles.listContainer}>
-			{usersData.map((user) => {
-		
+			{uniqueUsers.map((user) => {
 				const isFriend = friends.some((f) => f.id === user.id);
 				const isFollowing = following.some((f) => f.id === user.id);
 				const hasIncomingRequest = requests.some((r) => r.id === user.id);

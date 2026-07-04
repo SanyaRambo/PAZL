@@ -2,7 +2,7 @@
     max-width: 1000px;
 	margin: 0 auto;
 	padding: 20px 20px 40px;
-	background: var(--bg-body);
+	background: var(--bg-secondary);
 	color: var(--text-primary);
 	border-top-left-radius: 50px;
 	border-top-right-radius: 50px;

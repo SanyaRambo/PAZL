@@ -12,7 +12,7 @@ import { getPlainTextFromJSON } from '../../../shared/utils/planTextJSON';
 import { request } from '../../../shared/utils/request';
 import { useState } from 'react';
 import { DeletedPostCard } from './DeletedPostCard';
-import { ConfirmModal } from '../../../widgets/modal-window/confirm-modal'; 
+import { ConfirmModal } from '../../../widgets/modal-window/confirm-modal';
 
 export const PostCard = ({ post }) => {
 	const {
@@ -35,6 +35,7 @@ export const PostCard = ({ post }) => {
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+
 
 	const likeData = useSelector((state) => state.likes.posts[id]);
 	const likeKey = likeData ? `${likeData.isLiked}-${likeData.likesCount}` : 'init';

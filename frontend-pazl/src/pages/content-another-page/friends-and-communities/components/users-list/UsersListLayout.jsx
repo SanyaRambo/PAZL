@@ -16,13 +16,12 @@ import {
 	Minus,
 	User2,
 	X,
-	OctagonX
+	OctagonX,
 } from 'lucide-react';
 import { getColorById } from '../../../../../shared/utils/getColorById';
 import { ROLE } from '../../../../../shared/constants';
 import { NavLink } from 'react-router-dom';
 import { memo } from 'react';
-
 
 const safeAction = (action, actionName, userId) => {
 	if (!action || typeof action.execute !== 'function') {
@@ -67,19 +66,18 @@ export const UsersListLayout = memo(
 		isUserDelete,
 		onDeleteUser,
 	}) => {
-
-
-
 		if (isDeleted) {
 			return (
 				<div className={`${styles.userItem} ${styles.userItemDeleted}`}>
 					<div className={styles.deletedMessage}>
-						<span><OctagonX/>ЭТОТ ПОЛЬЗОВАТЕЛЬ УДАЛЁН</span>
+						<span>
+							<OctagonX />
+							ЭТОТ ПОЛЬЗОВАТЕЛЬ УДАЛЁН
+						</span>
 					</div>
 				</div>
 			);
 		}
-
 
 		const followSafe = safeAction(follow, 'follow', id);
 		const unfollowSafe = safeAction(unfollow, 'unfollow', id);
@@ -139,13 +137,6 @@ export const UsersListLayout = memo(
 				<div className={styles.action}>
 					{id !== currentUserId && (
 						<>
-							<Button
-								className={styles.iconComment}
-								title="Написать сообщение"
-							>
-								<MessageCircle className={styles.Icon} size={18} />
-							</Button>
-
 							{isFriend ? (
 								<Button
 									className={styles.iconMinus}
@@ -334,21 +325,31 @@ export const UsersListLayout = memo(
 										)}
 									</Button>
 									<Button
-  disabled={isUserDeleting}
-  className={isUserDeleting ? styles.disableIcon : styles.iconDelete}
-  onClick={onDeleteUser}
-  title="Удалить пользователя"
->
-  {isUserDeleting ? (
-    <Loader className={styles.smallLoader} childclassName={styles.dot} />
-  ) : isUserDelete ? (
-    <Check className={styles.successIcon} size={18} />
-  ) : isUserDeleteError ? ( // ✅ показываем крестик
-    <X className={styles.errorIcon} size={18} />
-  ) : (
-    <Trash2 className={styles.Icon} size={18} />
-  )}
-</Button>
+										disabled={isUserDeleting}
+										className={
+											isUserDeleting
+												? styles.disableIcon
+												: styles.iconDelete
+										}
+										onClick={onDeleteUser}
+										title="Удалить пользователя"
+									>
+										{isUserDeleting ? (
+											<Loader
+												className={styles.smallLoader}
+												childclassName={styles.dot}
+											/>
+										) : isUserDelete ? (
+											<Check
+												className={styles.successIcon}
+												size={18}
+											/>
+										) : isUserDeleteError ? (
+											<X className={styles.errorIcon} size={18} />
+										) : (
+											<Trash2 className={styles.Icon} size={18} />
+										)}
+									</Button>
 								</>
 							)}
 						</>

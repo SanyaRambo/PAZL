@@ -8,6 +8,15 @@
 	overflow: hidden;
 }
 
+.sortWrapper {
+	display: flex;
+	background-color: var(--bg-secondary);
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	margin: 16px 0;
+
+}
+
 .tabs {
 	display: flex;
 	flex-direction: column;
@@ -65,7 +74,7 @@
 .usersTable {
 	flex: 1;
 	max-width: 700px;
-	background: var(--bg-secondary);;
+	background: var(--bg-secondary);
 	border-radius: 16px;
 	border: 1px solid var(--border);
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);

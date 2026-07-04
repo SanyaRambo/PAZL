@@ -1,9 +1,10 @@
 .sortControls {
 	display: flex;
-	align-items: center;
-	gap: 12px;
+	align-items: start;
+	flex-direction: column;
+	gap: 4px;
 	margin-bottom: 16px;
-	padding: 8px 0;
+	padding: 8px 2px;
 }
 
 .label {

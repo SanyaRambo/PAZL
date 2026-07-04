@@ -8,17 +8,33 @@ import styles from '../usersList.module.css';
 import { OctagonX } from 'lucide-react';
 
 export const ApplicationsList = memo(() => {
-	const { filteredRoles, friends, following, requests, inputValue } =
+	const { filteredRoles, friends, following, requests, inputValue, sortOption } =
 		useOutletContext();
 	const currentUserId = useSelector(selectUserId);
 	const currentUserIdRole = useSelector(selectUserRole);
 
-	const filteredRequests = useMemo(() => {
-		const search = inputValue.toLowerCase();
-		return requests.filter((user) => user.login.toLowerCase().includes(search));
-	}, [requests, inputValue]);
+	const sortedRequests = useMemo(() => {
+		if (!requests || requests.length === 0) return [];
 
-	if (filteredRequests.length === 0) {
+		const [sortBy, order] = sortOption.split('_');
+		const sorted = [...requests].filter((user) =>
+			user.login.toLowerCase().includes(inputValue.toLowerCase()),
+		);
+
+		return sorted.sort((a, b) => {
+			let valA = a[sortBy] || '';
+			let valB = b[sortBy] || '';
+			if (sortBy === 'createdAt' || sortBy === 'registeredAt') {
+				valA = new Date(a.registeredAt || a.createdAt || 0);
+				valB = new Date(b.registeredAt || b.createdAt || 0);
+			}
+			if (valA < valB) return order === 'asc' ? -1 : 1;
+			if (valA > valB) return order === 'asc' ? 1 : -1;
+			return 0;
+		});
+	}, [requests, sortOption, inputValue]);
+
+	if (sortedRequests.length === 0) {
 		return (
 			<div
 				className={styles.empty}
@@ -26,28 +42,13 @@ export const ApplicationsList = memo(() => {
 			>
 				{inputValue ? (
 					<>
-						<div
-							style={{
-								fontSize: '30px',
-							}}
-						>
+						<div style={{ fontSize: '30px' }}>
 							Заявок в друзья от такого пользователя не найдено
 						</div>
-						<OctagonX
-							size={60}
-							style={{
-								color: '#ec5959',
-							}}
-						/>
+						<OctagonX size={60} style={{ color: '#ec5959' }} />
 					</>
 				) : (
-					<div
-						style={{
-							fontSize: '30px',
-						}}
-					>
-						У вас нет заявок в друзья
-					</div>
+					<div style={{ fontSize: '30px' }}>У вас нет заявок в друзья</div>
 				)}
 			</div>
 		);
@@ -55,7 +56,7 @@ export const ApplicationsList = memo(() => {
 
 	return (
 		<div className={styles.listContainer}>
-			{filteredRequests.map((user) => {
+			{sortedRequests.map((user) => {
 				const isFriend = friends.some((f) => f.id === user.id);
 				const isFollowing = following.some((f) => f.id === user.id);
 				return (

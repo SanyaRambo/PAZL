@@ -5,16 +5,13 @@ function buildQuery({ search, isPublished, author, userId, includeDeleted }) {
 		query.title = { $regex: search, $options: "i" };
 	}
 
-
 	if (isPublished !== undefined) {
 		query.isPublished = isPublished;
 	}
 
-
 	if (author) {
 		query.author = author;
 	}
-
 
 	if (userId) {
 		query.likes = { $elemMatch: { userId } };
@@ -22,9 +19,22 @@ function buildQuery({ search, isPublished, author, userId, includeDeleted }) {
 	}
 
 	if (!includeDeleted) {
-		query.isDeleted = {
-			$ne: true,
-		};
+		query.isDeleted = { $ne: true };
+	}
+
+	return query;
+}
+
+
+function buildUserQuery({ search, includeDeleted }) {
+	const query = {};
+
+	if (search) {
+		query.login = { $regex: search, $options: "i" }; 
+	}
+
+	if (!includeDeleted) {
+		query.isDeleted = { $ne: true };
 	}
 
 	return query;
@@ -32,4 +42,5 @@ function buildQuery({ search, isPublished, author, userId, includeDeleted }) {
 
 module.exports = {
 	buildQuery,
+	buildUserQuery,
 };

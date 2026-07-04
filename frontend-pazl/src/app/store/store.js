@@ -7,6 +7,7 @@ import { editorReducer } from '../../entities/editor-entite/reducer';
 import { likesReducer } from '../../entities/likes-entite/reducer';
 import { likedPostsReducer } from '../../entities/liked-posts-entite/reducer/liked-posts-reducer';
 import { friendsReducer } from '../../entities/friends-entite/friends-reducer';
+import { commentsReducer } from '../../entities/comments-entite';
 
 const appReducers = combineReducers({
 	user: userReducer,
@@ -16,6 +17,7 @@ const appReducers = combineReducers({
 	likes: likesReducer,
 	likedPosts: likedPostsReducer,
 	friends: friendsReducer,
+	comments: commentsReducer
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

@@ -100,3 +100,14 @@
 .confirmBtn.info:hover {
 	background: rgba(64, 192, 87, 0.35);
 }
+
+.buttons {
+	display: flex;
+	gap: 12px;
+	justify-content: center;
+}
+
+/* Если только одна кнопка – она центрируется и шире */
+.buttons:has(.confirmBtn:only-child) {
+	justify-content: center;
+}
