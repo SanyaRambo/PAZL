@@ -10,11 +10,12 @@ import { LikeSection } from '../likeAndDislike';
 import { getColorById } from '../../../shared/utils/getColorById';
 import { getPlainTextFromJSON } from '../../../shared/utils/planTextJSON';
 import { request } from '../../../shared/utils/request';
-import { useState } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { DeletedPostCard } from './DeletedPostCard';
 import { ConfirmModal } from '../../../widgets/modal-window/confirm-modal';
+import { selectPostLike } from '../../../entities/likes-entite/selectors';
 
-export const PostCard = ({ post }) => {
+export const PostCard = memo(({ post }) => {
 	const {
 		id,
 		title,
@@ -36,33 +37,38 @@ export const PostCard = ({ post }) => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-
-	const likeData = useSelector((state) => state.likes.posts[id]);
+	const likeData = useSelector((state) => selectPostLike(state, id));
 	const likeKey = likeData ? `${likeData.isLiked}-${likeData.likesCount}` : 'init';
-
-	const handleEditClick = (e) => {
-		e.stopPropagation();
-		e.preventDefault();
-		dispatch(setEditingPost(post));
-		navigate('/workshop');
-	};
 
 	const isOwner = idAuthor === currentUserId;
 	const isAdmin = ROLE.ADMIN === currentUserRole;
 
-	const handleAvatarClick = (e) => {
-		e.stopPropagation();
-		e.preventDefault();
-		navigate(`/profile-user/${idAuthor}`);
-	};
+	const handleEditClick = useCallback(
+		(e) => {
+			e.stopPropagation();
+			e.preventDefault();
+			dispatch(setEditingPost(post));
+			navigate('/workshop');
+		},
+		[dispatch, navigate, post],
+	);
 
-	const handleDeletePostClick = (e) => {
+	const handleAvatarClick = useCallback(
+		(e) => {
+			e.stopPropagation();
+			e.preventDefault();
+			navigate(`/profile-user/${idAuthor}`);
+		},
+		[navigate, idAuthor],
+	);
+
+	const handleDeletePostClick = useCallback((e) => {
 		e.stopPropagation();
 		e.preventDefault();
 		setShowDeleteModal(true);
-	};
+	}, []);
 
-	const confirmDeletePost = async () => {
+	const confirmDeletePost = useCallback(async () => {
 		setShowDeleteModal(false);
 		const data = await request(`/api/publications/${id}`, 'DELETE');
 		if (data.res) {
@@ -70,7 +76,7 @@ export const PostCard = ({ post }) => {
 		} else {
 			console.log('Ошибка в удалении поста', data.error);
 		}
-	};
+	}, [id]);
 
 	if (isDeleted) {
 		return <DeletedPostCard />;
@@ -185,4 +191,4 @@ export const PostCard = ({ post }) => {
 			/>
 		</>
 	);
-};
+});

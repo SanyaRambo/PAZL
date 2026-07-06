@@ -1,7 +1,30 @@
+# Зависимости
 node_modules/
-.env
+**/node_modules/
+
+# Сборка
 dist/
 build/
 *.log
+
+# Секреты и переменные окружения
+.env
+*.env
+*.env.*
+!.env.example
+
+# Загрузки (бэкенд)
+backend-pazl/uploads/*
+!backend-pazl/uploads/.gitkeep
+
+# IDE и системные файлы
+.vscode/
+.idea/
+*.swp
+*.swo
 .DS_Store
-.gitignore
+Thumbs.db
+
+# Временные файлы
+*.tmp
+*.temp

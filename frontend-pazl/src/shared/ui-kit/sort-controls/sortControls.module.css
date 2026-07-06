@@ -3,7 +3,6 @@
 	align-items: start;
 	flex-direction: column;
 	gap: 4px;
-	margin-bottom: 16px;
 	padding: 8px 2px;
 }
 
@@ -16,7 +15,7 @@
 .select {
 	padding: 6px 12px;
 	border-radius: 8px;
-	background: var(--bg-body);
+	background: var(--bg-secondary);
 	border: 1px solid var(--border);
 	color: var(--text-primary);
 	font-size: 0.9rem;

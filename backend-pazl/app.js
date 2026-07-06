@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
@@ -35,13 +37,13 @@ app.use((err, req, res, next) => {
 	console.error("❌ Ошибка:", err.message);
 	res.status(500).send({
 		res: null,
-		error: err.message || "Внутренняя ошибка сервера",
+		error: err.code === 11000 ? "Такой пользователь уже существует" : err.message || "Внутренняя ошибка сервера",
 	});
 });
 
 mongoose
 	.connect(
-		"mongodb://aleksandr:pazlpass@localhost:27017/pazldb?authSource=admin",
+		process.env.DB_CONNECTION_SCTRING,
 	)
 	.then(() => {
 		app.listen(port, () => {

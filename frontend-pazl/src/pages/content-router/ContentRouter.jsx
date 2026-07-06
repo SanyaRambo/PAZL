@@ -59,7 +59,6 @@ export const ContentRouter = () => {
 	return (
 		<>
 			<TopHeader inputValue={inputValue} setInputValue={setInputValue} />
-			<div className={styles.content}>
 				<Routes>
 					<Route path="/" element={<MainPage />} />
 					<Route path="/media-library" element={<MediaLibrary />} />
@@ -88,7 +87,6 @@ export const ContentRouter = () => {
 					</Route>
 					<Route path="*" element={<ErrorComponent />} />
 				</Routes>
-			</div>
 		</>
 	);
 };

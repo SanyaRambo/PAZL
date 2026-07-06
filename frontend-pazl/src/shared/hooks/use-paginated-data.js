@@ -17,7 +17,7 @@ export const usePaginatedData = (
 
 	const isLoadingRef = useRef(false);
 	const offsetRef = useRef(offset);
-	const paramsRef = useRef({}); // ← вместо state используем ref
+	const paramsRef = useRef({});
 
 	useEffect(() => {
 		offsetRef.current = offset;
@@ -46,7 +46,6 @@ export const usePaginatedData = (
 				currentOffset = offsetRef.current;
 			}
 
-			// Объединяем параметры: из ref + переданные
 			const allParams = {
 				limit,
 				offset: currentOffset,
@@ -55,7 +54,6 @@ export const usePaginatedData = (
 				...overrideParams,
 			};
 
-			// Сохраняем параметры в ref для следующих загрузок
 			paramsRef.current = { ...paramsRef.current, ...overrideParams };
 
 			try {
@@ -75,7 +73,6 @@ export const usePaginatedData = (
 					? `${baseURL}&${urlParams.toString()}`
 					: `${baseURL}?${urlParams.toString()}`;
 
-				console.log('📡 Запрос:', url);
 
 				const result = await request(url, 'GET', null, currentUserSession);
 
@@ -113,7 +110,6 @@ export const usePaginatedData = (
 		}
 	}, [hasMore, loading, loadData]);
 
-	// ✅ refetch теперь СТАБИЛЕН (зависит только от loadData)
 	const refetch = useCallback(
 		(newParams = {}) => {
 			paramsRef.current = { ...paramsRef.current, ...newParams };

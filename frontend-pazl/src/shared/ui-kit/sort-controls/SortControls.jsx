@@ -1,6 +1,7 @@
+import { memo } from 'react';
 import styles from './sortControls.module.css';
 
-export const SortControls = ({ options, value, onChange, label }) => {
+export const SortControls = memo(({ options, value, onChange, label }) => {
 	return (
 		<div className={styles.sortControls}>
 			{label && <span className={styles.label}>{label}</span>}
@@ -17,4 +18,4 @@ export const SortControls = ({ options, value, onChange, label }) => {
 			</select>
 		</div>
 	);
-};
+});

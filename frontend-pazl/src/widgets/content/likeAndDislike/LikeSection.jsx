@@ -1,3 +1,4 @@
+import { memo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LikeButtons } from './LikeButtons';
 import {
@@ -6,9 +7,8 @@ import {
 } from '../../../entities/likes-entite/selectors';
 import { updateLikeThunk } from '../../../entities/likes-entite/actions';
 
-export const LikeSection = ({ entityId, idPublication, isComment = false }) => {
+export const LikeSection = memo(({ entityId, idPublication, isComment = false }) => {
 	const dispatch = useDispatch();
-
 	const likeData = useSelector((state) =>
 		isComment ? selectCommentLike(state, entityId) : selectPostLike(state, entityId),
 	);
@@ -18,22 +18,28 @@ export const LikeSection = ({ entityId, idPublication, isComment = false }) => {
 	const isLiked = likeData?.isLiked ?? false;
 	const isDisliked = likeData?.isDisliked ?? false;
 
-	const handleLike = (e) => {
-		e.stopPropagation();
-		e.preventDefault();
-		dispatch(updateLikeThunk(idPublication, isComment ? entityId : null, 'like'));
-	};
+	const handleLike = useCallback(
+		(e) => {
+			e.stopPropagation();
+			e.preventDefault();
+			dispatch(updateLikeThunk(idPublication, isComment ? entityId : null, 'like'));
+		},
+		[dispatch, idPublication, isComment, entityId],
+	);
 
-	const handleDislike = (e) => {
-		e.stopPropagation();
-		e.preventDefault();
-		dispatch(updateLikeThunk(idPublication, isComment ? entityId : null, 'dislike'));
-	};
-
+	const handleDislike = useCallback(
+		(e) => {
+			e.stopPropagation();
+			e.preventDefault();
+			dispatch(
+				updateLikeThunk(idPublication, isComment ? entityId : null, 'dislike'),
+			);
+		},
+		[dispatch, idPublication, isComment, entityId],
+	);
 
 	return (
 		<LikeButtons
-			key={`${entityId}-${isLiked}-${likesCount}`}
 			likesCount={likesCount}
 			dislikesCount={dislikesCount}
 			isLiked={isLiked}
@@ -42,4 +48,4 @@ export const LikeSection = ({ entityId, idPublication, isComment = false }) => {
 			onDislike={handleDislike}
 		/>
 	);
-};
+});
