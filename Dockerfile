@@ -1,3 +1,5 @@
-FROM node:18
+FROM node:24
 
-WORKDIR 
+WORKDIR usr/src/app
+
+COPY 
