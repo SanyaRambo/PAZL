@@ -11,7 +11,7 @@ const corsOptions = {
 		"http://localhost:5173",
 		"http://localhost",
 		"http://localhost:80",
-		"http://84.32.97.40",   
+		"http://84.32.97.40",
 		"http://84.32.97.40:80"
 	],
 	credentials: true,
@@ -54,7 +54,7 @@ app.use((err, req, res, next) => {
 });
 
 mongoose.connect(process.env.DB_CONNECTION_STRING).then(() => {
-	app.listen(port, () => {
+	app.listen(port, '0.0.0.0', () => {
 		console.log(`Server started on port ${port}`);
 	});
 });
