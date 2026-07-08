@@ -15,7 +15,7 @@ router.get(
 		const stats = await UserStats.findOne({ userId: req.user.id }).lean({ virtuals: true });
 
 		if (!stats) {
-			return res.status(404).json({ res: null, error: "Статистики нет. Будьте активным пользователям, чтобы у вас появилось статистика" });
+			return res.status(404).json({ res: null, error: "Статистики нет. Будьте активным пользователем, чтобы у вас появилось статистика" });
 		}
 
 		res.json({ res: stats, error: null });
