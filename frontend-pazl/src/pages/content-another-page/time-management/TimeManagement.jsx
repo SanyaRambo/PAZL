@@ -30,7 +30,7 @@ export const TimeManagement = () => {
 			</div>
 
 			{statsLoading && <div className={styles.loader}>Загрузка статистики...</div>}
-			{statsError && <div className={styles.error}>Ошибка загрузки статистики</div>}
+			{statsError && <div className={styles.error}>{statsError}</div>}
 
 			{stats && (
 				<>
