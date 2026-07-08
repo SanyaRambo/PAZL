@@ -7,9 +7,16 @@ const routes = require("./routes");
 const path = require("path");
 const cors = require("cors");
 const corsOptions = {
-	origin: ["http://localhost:5173"],
+	origin: [
+		"http://localhost:5173",
+		"http://localhost",
+		"http://localhost:80",
+		"http://84.32.97.40",   
+		"http://84.32.97.40:80"
+	],
 	credentials: true,
 };
+
 const optionalAuth = require("./middlewares/optionalAuth");
 
 const port = 3001;

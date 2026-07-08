@@ -9,12 +9,10 @@ body {
 	padding: 0;
 }
 
-html,
-body,
-#root {
-	height: 100%;
-	margin: 0;
-	overflow: hidden; /* убираем скролл у всей страницы */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden; /* убираем скролл у всей страницы */
 }
 
 body {
@@ -85,6 +83,7 @@ body.light-theme {
 	--border-light: rgba(0, 0, 0, 0.12);
 	--cover: #00ff80;
 }
+
 
 .ProseMirror-drag-handle,
 .tiptap-drag-handle {

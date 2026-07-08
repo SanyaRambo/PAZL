@@ -110,6 +110,7 @@
 .content pre code.hljs {
 	background: #0d0d16 !important;
 	border-radius: 12px;
+	color: white;
 	padding: 1rem;
 	overflow-x: auto;
 	font-size: 0.85rem;
