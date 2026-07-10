@@ -1,0 +1,14 @@
+.leftHeader {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	position: fixed;
+	width: 70px;
+	background: var(--bg-secondary);
+	color: var(--text-primary);
+	left: 0;
+	border-right: 1px solid var(--border);
+	height: 100%;
+	padding-top: 19px;
+	z-index: 1000;
+}
