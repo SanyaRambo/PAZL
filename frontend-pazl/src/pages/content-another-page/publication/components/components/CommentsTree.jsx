@@ -173,7 +173,6 @@ export const CommentsTree = memo(
 					onReplyComment={onReplyComment}
 					onEditingComment={onEditingComment}
 					onDeleteClick={handleDeleteClick}
-					avatarAuthor={avatarAuthor}
 					idAuthor={idAuthor}
 					handleAvatarClick={handleAvatarClick}
 					avatarColor1={avatarColor1}
