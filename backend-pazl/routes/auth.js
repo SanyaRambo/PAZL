@@ -2,7 +2,7 @@ const express = require("express");
 const { register, login } = require("../controllers/user");
 const mapUser = require("../helpers/mapUser");
 const authenticated = require("../middlewares/authenticated");
-const asyncHandler = require("../middlewares/asyncHandler"); 
+const asyncHandler = require("../middlewares/asyncHandler");
 const { generateDate } = require("../helpers/dataHelpers");
 
 const router = express.Router({ mergeParams: true });
@@ -22,7 +22,6 @@ router.post(
 
 		res.cookie("token", token, {
 			httpOnly: true,
-			secure: process.env.NODE_ENV === "production",
 			sameSite: "lax",
 			maxAge: 7 * 24 * 60 * 60 * 1000,
 		}).send({
