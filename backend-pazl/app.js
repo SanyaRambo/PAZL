@@ -12,7 +12,7 @@ const corsOptions = {
 		"http://localhost",
 		"http://localhost:80",
 		"http://84.32.97.40",
-		"http://84.32.97.40:80"
+		"http://84.32.97.40:80",
 	],
 	credentials: true,
 };
@@ -21,6 +21,7 @@ const optionalAuth = require("./middlewares/optionalAuth");
 
 const port = 3001;
 const app = express();
+let dbConnectionString;
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
@@ -53,10 +54,16 @@ app.use((err, req, res, next) => {
 	});
 });
 
+if (process.env.NODE_ENV === "production") {
+	dbConnectionString =
+		"mongodb://aleksandr:pazlpass@mongo_db:27017/pazldb?authSource=admin";
+} else {
+	dbConnectionString =
+		"mongodb://aleksandr:pazlpass@localhost:27017/pazldb?authSource=admin";
+}
 
-
-mongoose.connect(process.env.DB_CONNECTION_STRING).then(() => {
-	app.listen(port, '0.0.0.0', () => {
+mongoose.connect(dbConnectionString).then(() => {
+	app.listen(port, "0.0.0.0", () => {
 		console.log(`Server started on port ${port}`);
 	});
 });
